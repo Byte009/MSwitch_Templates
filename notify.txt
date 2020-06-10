@@ -1,0 +1,14 @@
+
+SELECT>>Trigger_device>>Ein Event welchen Gerätes soll das MSwitch auslösen ?
+#INQ>>TWO>>ONE>>ja,nein>>MSwitch besitzt 2 Schaltkanäle, sollen beide Kanäle genutzt werden ?
+EVENT>>MSwitch_cmd1>>Event für Auslösung Kanal 1 ?<br>Bitte Event auslösen und das gewünschte markieren.
+TWO>>EVENT>>MSwitch_cmd2>>Event für Auslösung Kanal 2 ?<br>Bitte Event auslösen und das gewünschte markieren.
+SELECT>>Device_to_switch>>Welches Device soll auf das eingehende Event reagiern ?
+SELECT>>comand_cmd1>>Welches Kommando soll bei eigehendem Event ausgeführ werden ? 
+#TWO>>SELECT>>comand_cmd2>>Welches Kommando soll bei eigehendem Event im zweiten Kanal ausgeführ werden ?
+INQ>>DEL>>NODEL>>ja,nein>>Soll der Befehl verzögert ausgeführt werden ?
+DEL>>ASK>>delay_cmd1>>Bitte Verzögerung angeben.(Format HH:MM:SS)
+
+
+INQ>>COND>>NOCON>>ja,nein>>Soll dem Kanal1 eine Schaltbedingung zugefügt werden ?
+COND>>ASK>>condition_cmd1>>Schaltbedingung

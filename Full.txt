@@ -1,0 +1,179 @@
+# entwurf Template
+######################
+# grundsätzliche abfrage optionen
+######################
+# SET - setzt wert
+# ASK - fragt wert mit textfeld ab 
+# OPT - fragt wert anhand vorgegebener werte <wert1,wert2,wert3{ <optional> map1,map2,map3}>
+# SELECT - fragt wert anhand selectllista aller verfügbaren devices/werte ab
+# EVENT - fragt wert anhand des eventmonitors ab
+# INQ - leitet optionale zweige ein
+######################
+# abzufragende Felder
+######################
+# format : <opt> >> <feld> >> <angezeigter text im popup>
+######################
+# INFO - Infotext
+# Trigger_device  - auslösendes Gerät
+# Time_on  - zeit schaltet mswitch an
+# Time_off - zeit schaltet mswitch aus
+# Time_cmd1 - zeit ausführung cmd1
+# Time_cmd2 - zeit ausführung cmd1
+# Trigger_condition - Bedingung für Trigger ( nicht events )
+# Device_to_switch - zu schaltendes Gerät
+
+# Mswitch_on - fragt Event ab ( MSwitch anschalten und Kanal 1 ausführen )
+# Mswitch_off - fragt Event ab ( MSwitch ausschalten und Kanal 2 ausführen )
+# Mswitch_cmd1 - fragt Event ab ( Kanal 1 ausführen )
+# Mswitch_cmd2 - fragt Event ab ( Kanal 2 ausführen )
+
+# comand_cmd1 - Kommandozweig 1
+# comand_cmd2 - Kommandozweig 2
+# delay_cmd1 - verzögerte Befehlsausführung kanal 1
+# delay_cmd2  - verzögerte Befehlsausführung kanal 2
+# condition_cmd1 - schaltbedingung Kanal 1
+# condition_cmd2 - schaltbedingung Kanal 2
+# cmd_repeat - wiederholung der Kanälq 1 und 2
+# cmd_repeat_time - zeit in sekunden zwischen wiederholungen
+
+
+# INQ - Abfrtage Option
+# BEISPIEL: INQ>>TRIGGER>>TIME>>Eventsteuerung,Zeitsteuerung>>Soll das MSwitch Eventgesteuert oder Zeitgesteuert sein 
+
+# ATTR - Attribut (SET,OPT,ASK,SELECT)
+
+# REPEAT - Codewiederholung / Anzahl der zu wiederholenden Templatezeilen / ( Abfrage ja/nein ) 
+# BEISPIEL: REPEAT>>3>>Soll ein weiteres Gerät geschaltet werden ? ( ja wiederholt die letzten 3 codezeilen inc. REPEAT )
+
+
+
+######################
+# weitere optionen 
+# noch nicht umgesetzt <HELP> - zeigt zugehörige Hilfe an, falls vorhanden
+# schaltbedingungen typ ändern
+# IDs anlegen
+# Repeats anlegen
+
+######################
+
+
+
+SELECT>>Device_to_switch>>device to switch
+
+
+INQ>>ONE>>TWO>>ja,nein>>MSwitch besitzt 2 Schaltkanäle, sollen beide Kanäle genutzt werden ?
+
+
+
+
+
+
+
+
+
+
+
+
+SELECT>>comand_cmd1>>kommando
+
+INQ>>REPEATET>>NOTREPEATED>>ja,nein>>Sollen Befehle mehrfach ausgeführt werden ( Wiederholungen ) ?
+REPEATET>>ASK>>cmd_repeat>>wie oft soll der Befehl wiederholt werden
+REPEATET>>ASK>>cmd_repeat_time>>wieviele Skunden sollen zwischen den Wiederholungen liegen
+
+
+DELAYED>>ASK>>delay_cmd1>>Verzögerung in Sekunden für Kanal 1
+DELAYED>>ASK>>delay_cmd2>>Verzögerung in Sekunden für Kanal 2
+DELAYED>>ATTR>>SET>>MSwitch_Expert>>1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SELECT>>Device_to_switch>>Zu schaltendes Device wählen
+SET>>Device_to_switch>>0x00158d00028f76f9
+SET>>comand_cmd1>>test on
+
+SELECT>>Device_to_switch>>device to switch
+SELECT>>comand_cmd1>>Kommando
+
+
+ATTR>>SET>>MSwitch_Lock_Quickedit>>1
+ATTR>>SET>>MSwitch_Expert>>0
+ATTR>>SET>>MSwitch_Inforoom>>MSwitch
+ATTR>>SET>>MSwitch_Include_Devicecmds>>1
+ATTR>>SET>>room>>MSwitch
+ATTR>>SET>>MSwitch_Help>>0
+ATTR>>SET>>MSwitch_Safemode>>1
+ATTR>>SET>>MSwitch_Extensions>>0
+ATTR>>SET>>MSwitch_Include_Webcmds>>0
+ATTR>>SET>>MSwitch_Ignore_Types>>notify allowed at watchdog doif fhem2fhem telnet FileLog readingsGroup FHEMWEB autocreate eventtypes readingsproxy svg cul
+ATTR>>SET>>MSwitch_Eventhistory>>0
+ATTR>>SET>>MSwitch_Include_MSwitchcmds>>0
+ATTR>>SET>>MSwitch_Debug>>0
+ATTR>>SET>>MSwitch_Mode>>Notify
+ATTR>>SET>>MSwitch_Delete_Delays>>1
+
+
+#SET>>INFO>>infotext zum template
+
+#SELECT>>Trigger_device>>Bitte Triggerdevice wählen
+#EVENT>>Mswitch_on>>Event für on ?
+
+#INQ>>TRIGGER>>TIME>>Eventsteuerung,Zeitsteuerung>>Soll das MSwitch Eventgesteuert oder Zeitgesteuert sein
+#nur für zeitsteuerung
+#TIME>>ASK>>Time_on>>Zu welcher Zeit soll das MSwitch einschalten ?
+#TIME>>ASK>>Time_off>>Zu welcher Zeit soll das MSwitch ausschalten ?
+#nur für Triggersteuerung
+
+
+#TRIGGER>>SET>>MSwitch_on>>state:1
+#TRIGGER>>SET>>MSwitch_off>>state:2
+#TRIGGER>>SET>>MSwitch_cmd1>>state:3
+#TRIGGER>>SET>>MSwitch_cmd2>>state:4
+
+
+
+#TRIGGER>>INQ>>GLOBAL>>NONGLOBAL>>ja,nein>>Wird GLOBAL getriggert ?
+#GLOBAL>>ATTR>>SET>>MSwitch_Expert>>1
+#NONGLOBAL>>ATTR>>SET>>MSwitch_Expert>>0
+
+#GLOBAL>>ASK>>Trigger_Whitelist>>Zugelassene Triggerdevices eintragen !
+
+#ATTR>>OPT>>MSwitch_Expert>>0,1{nein,ja}>>Soll das Device im Expertmode agieren ?
+#ATTR>>SELECT>>MSwitch_Mode>>In welchem Modus soll das Device betrieben werden ?
+
+#ALEXA>>ATTR>>SELECT>>genericDeviceType>>Um was für einen Alexatyp handelt es sich ?
+#ALEXA>>ATTR>>ASK>>alexaName>>Wie soll der Alexa Name sein ?
+
+
+
+
+
+#ATTR>>SET>>disable>>1
+#
+#
+#ATTR>>SELECT>>group>>Soll das Device in eine Gruppe sortiert werden ?
+#ATTR>>SELECT>>eventMap>>Soll ein Eventmap eingetragen werden ?
+#ATTR>>SELECT>>room>>in welchen Raum soll das Device sortiert werden ?
+#
+#
+
+#ASK>>Time_cmd1>>Zu welcher Zeit soll Schaltkanal 1 ausgeführt werden ?
+#OPT>>Time_cmd2>>[20:00],[21:00]>>soll der Schaltkanal 2 um 20 Uhr oder um 21 Uhr ausgeführt werden ?
+#ASK>>Trigger_condition>>Soll für das Auslösen des Triggers eine weitere Bedingung gelten ?
+#ASK>>Trigger_condition>>Soll für das Auslösen des Triggers eine weitere Bedingung gelten ?
