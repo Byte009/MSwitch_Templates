@@ -2,6 +2,6 @@ SELECT>>Trigger_device>>Bitte das Geraet waehlen, das als Ausloeser dienen soll 
 EVENT>>MSwitch_cmd1>>Bitte Event als Ausloeser waehlen ?<br>(Event im Geraet ausloesen und das gewuenschte markieren).
 SELECT>>Device_to_switch>>Welches Device soll auf das eingehende Event reagiern ?
 SELECT>>comand_cmd1>>Welches Kommando soll bei eigehendem Event ausgefuehr werden ? 
-INQ>>DEL>>NODEL>>verzoegert,sofort>>Soll der Befehl verzoegert oder sofort ausgefuehrt werden ?
-DEL>>ASK>>delay_cmd1>>Bitte Verzoegerung angeben.<br>(Format HH:MM:SS)
+INQ>>ZWEIG1>>ZWEIG2>>verzoegert,sofort>>Soll der Befehl verzoegert oder sofort ausgefuehrt werden ?
+ZWEIG1>>ASK>>delay_cmd1>>Bitte Verzoegerung angeben.<br>(Format HH:MM:SS)
 REPEAT>>5>>Soll ein weiteres Geraet geschaltet werden ?
