@@ -2,7 +2,7 @@
 ######################
 # grundsätzliche abfrage optionen
 ######################
-# SET - setzt wert
+# SET - setzt wert 
 # ASK - fragt wert mit textfeld ab 
 # OPT - fragt wert anhand vorgegebener werte <wert1,wert2,wert3{ <optional> map1,map2,map3}>
 # SELECT - fragt wert anhand selectllista aller verfügbaren devices/werte ab
