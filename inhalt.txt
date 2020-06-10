@@ -1,0 +1,2 @@
+einfaches_notify.txt|Template zur Anlage eines einfachen notifys
+full_device.txt|Anlage eines Vollständigen MSwitches
