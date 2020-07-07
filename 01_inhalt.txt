@@ -1,1 +1,2 @@
 einfaches_notify.txt|Template zur Anlage eines einfachen notifys
+Help_not_executable.txt|Beschreibung Templatebefehle - nicht ausfuehrbar
