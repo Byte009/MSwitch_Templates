@@ -118,3 +118,5 @@
 #OPT>>Time_cmd2>>[20:00],[21:00]>>soll der Schaltkanal 2 um 20 Uhr oder um 21 Uhr ausgeführt werden ?
 #ASK>>Trigger_condition>>Soll für das Auslösen des Triggers eine weitere Bedingung gelten ?
 #ASK>>Trigger_condition>>Soll für das Auslösen des Triggers eine weitere Bedingung gelten ?
+INFO>>Befehlssatz für Templates
+VARASK>>$TEST>>TEST
