@@ -1,0 +1,14 @@
+SET>>INFO>>MSwitch Template - Erstellt MSwitch mit mehreren oder einzelnen Auslöse- und Empfangsgeräten. <br> Als Beispiel könnte eine Türklingel genommen werden mit mehreren Türen und auch Gongs.
+SET>>AUTOR>>Kai Christeleit
+SET>>Trigger_device>>GLOBAL
+VARDEVICES>>$dev_trigger>>Bitte (Klingel)Shalter wählen<br>(Mehrfachauswahl möglich mit STRG+Klick).
+SET>>Trigger_Whitelist>>$dev_trigger
+EVENT>>$dev_event>>Bitte Event als Auslöser wählen ?<br>(Mehrfachauswahl, bearbeiten und Regex möglich!).
+SET>>MSwitch_cmd1>>$dev_event
+NOEDIT>>SET>>MSwitch_cmd1>>$dev_event
+EDIT>>VARASK>>$dev_event>>Bitte im Textfeld das EVENT eintragen. Regex ist möglich. Aktuelles EVENT: $dev_event
+EDIT>>SET>>MSwitch_cmd1>>$dev_event
+SELECT>>Device_to_switch>>Bitte wähle dein(e) Ausgabegeräte
+SELECT>>comand_cmd1>>Bitte wähle eine Aktion für das Gerät
+REPEAT>>3>>Möchtest du weitere Ausgabegeräte auswählen?
+ATTR>>SET>>MSwitch_Expert>>1
