@@ -1,7 +1,7 @@
 SET>>INFO>>MSwitch Template - Erstellt MSwitch mit mehreren oder einzelnen Ausloese- und Empfangsgeraeten. <br> Als Beispiel koennte eine Tuerklingel genommen werden mit mehreren Tueren und auch Gongs.
 SET>>AUTOR>>Kai Christeleit
 SET>>Trigger_device>>GLOBAL
-VARDEVICES>>$dev_trigger>>Bitte (Klingel)Shalter waehlen<br>(Mehrfachauswahl moeglich mit STRG+Klick).
+VARDEVICES>>$dev_trigger>>Bitte (Klingel)Schalter waehlen<br>(Mehrfachauswahl moeglich mit STRG+Klick).
 SET>>Trigger_Whitelist>>$dev_trigger
 EVENT>>$dev_event>>Bitte Event als Ausloeser waehlen ?<br>(Mehrfachauswahl, bearbeiten und Regex moeglich!).
 SET>>MSwitch_cmd1>>$dev_event
