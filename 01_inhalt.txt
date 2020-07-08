@@ -1,2 +1,3 @@
 einfaches_notify.txt|Template zur Anlage eines einfachen notifys
+AllroundNotify.txt|Erstellt MSwitch mit mehreren oder einzelnen Auslöse und Empfangsgeräten
 Help_not_executable.txt|Beschreibung Templatebefehle - nicht ausfuehrbar
