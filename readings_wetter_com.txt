@@ -1,6 +1,5 @@
 SET>>INFO>>Dieses Device extrahiert aktuelle Wetterdaten aus wetter.com und stellt diese als Reading bereit.<br>Trigger und weiterführende Aktionen (Ausgabe) können definiert werden.
 
-
 ATTR>>SET>>MSwitch_Mode>>Notify
 ATTR>>SET>>MSwitch_Expert>>1
 ATTR>>SET>>eventMap>>/exec_cmd_1:read_data/
@@ -34,13 +33,10 @@ rain>>VARSET>>$OUT>>$MASTER#[nl]$SUN#[nl]$RAIN
 ATTR>>SET>>MSwitch_ExtraktfromHTTP>>$OUT
 ATTR>>SET>>MSwitch_ExtraktHTTPMapping>>°C-> Grad Celsius#[nl]<.*?>->
 
-
 SET>>READING>>Vorhersage>>no_match
 
 rain>>SET>>READING>>Regenwahrscheinlichkeit>>no_match
 sun>>SET>>READING>>Sonnenstunden>>no_match
-
-
 
 INQ>>out>>noout>>Ja,Nein>>Sollen die gelesenen Daten über ein Gerät ausgegeben werden ?
 noout>>EXIT
