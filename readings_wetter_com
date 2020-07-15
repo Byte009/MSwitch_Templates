@@ -1,0 +1,57 @@
+INFO>>Dieses Device extrahiert aktuelle Wetterdaten aus wetter.com und stellt diese als Reading bereit.<br>Trigger und weiterführende Aktionen (Ausgabe) können definiert werden.
+
+
+ATTR>>SET>>MSwitch_Mode>>Notify
+ATTR>>SET>>MSwitch_Expert>>1
+ATTR>>SET>>eventMap>>/exec_cmd_1:read_data/
+ATTR>>SET>>webCmd>>read_data
+
+PREASSIGMENT>>https://www.wetter.com/deutschland/kirchhain/DE0005476.html
+VARASK>>$URL>>Bitte die Seite:<br><a href="http://www.wetter.com" target="_blank">http://www.wetter.com</a><br>öffnen und dort den gesuchten Ort angeben.<br>Danach die URL übernehmen und weiter drücken.<br>z.B. https://www.wetter.com/deutschland/kirchhain/DE0005476.html
+
+PREASSIGMENT>>
+
+SET>>Device_to_switch>>MSwitch_Self
+SET>>comand_cmd1>>loadHTTP $URL
+SET>>PRIORITY>>1
+
+INQ>>AEVENT>>AMANUELL>>Event,Manuell>>Soll das einlesen der Daten manuell oder durch ein Event erfolgen?<br>Eine manuelle Auslösung ist immer möglich! 
+
+AEVENT>>SELECT>>Trigger_device>>Bitte das Gerät wählen, welches das auslösende Event auslöst.
+AEVENT>>EVENT>>MSwitch_cmd1>>Bitte das auslösende Event Auswählen oder manuell eintagen.<br>Durch schalten des gewählten Gerätes werden die generierten Events autmatisch angezeigt.
+
+VARSET>>$MASTER>>Vorhersage-><p class="json-ld-answer">\s*(.*?)\s*<\/p>
+VARSET>>$OUT>>Vorhersage-><p class="json-ld-answer">\s*(.*?)\s*<\/p>
+
+INQ>>sun>>nosun>>Ja,Nein>>Auswahl der Readings:<br>Soll das Reading Sonnenstunden angelegt werden ?<br>Beispiel: Sonnenstunden - Freuen Sie sich auf bis zu 10 Sonnenstunden
+sun>>VARSET>>$SUN>>Sonnenstunden-><span class="text--gray">\s*(.*?)\s*<\/span>
+sun>>VARSET>>$OUT>>$MASTER#[nl]$SUN
+
+INQ>>rain>>norain>>Ja,Nein>>Auswahl der Readings:<br>Soll das Reading Regenwahrscheinlichkeit angelegt werden ?<br>Beispiel: Regenwahrscheinlichkeit - Aktuell kein Niederschlag in Sicht
+rain>>VARSET>>$RAIN>>Regenwahrscheinlichkeit-><div id="nowcast-text".*?>\s*(.*?)\s*<\/div>
+rain>>VARSET>>$OUT>>$MASTER#[nl]$SUN#[nl]$RAIN
+
+ATTR>>SET>>MSwitch_ExtraktfromHTTP>>$OUT
+ATTR>>SET>>MSwitch_ExtraktHTTPMapping>>°C-> Grad Celsius
+
+
+SET>>READING>>Vorhersage>>no_match
+
+rain>>SET>>READING>>Regenwahrscheinlichkeit>>no_match
+sun>>SET>>READING>>Sonnenstunden>>no_match
+
+
+
+INQ>>out>>noout>>Ja,Nein>>Sollen die gelesenen Daten über ein Gerät ausgegeben werden ?
+noout>>EXIT
+
+SELECT>>Device_to_switch>>Welches Gerät soll die Daten ausgeben ?
+PREASSIGMENT>>[$SELF:Vorhersage], [$SELF:Regenwahrscheinlichkeit], [$SELF:Sonnenstunden]
+
+SELECT>>comand_cmd1>>Wie lautet der entsprechende Ausgabebefehl des Gerätes ?
+SET>>PRIORITY>>2
+
+
+
+
+
