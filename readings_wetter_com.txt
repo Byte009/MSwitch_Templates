@@ -7,12 +7,12 @@ ATTR>>SET>>eventMap>>/exec_cmd_1:read_data/
 ATTR>>SET>>webCmd>>read_data
 
 PREASSIGMENT>>https://www.wetter.com/deutschland/kirchhain/DE0005476.html
-VARASK>>$URL>>Bitte die Seite:<br><a href="http://www.wetter.com" target="_blank">http://www.wetter.com</a><br>öffnen und dort den gesuchten Ort angeben.<br>Danach die URL übernehmen und weiter drücken.<br>z.B. https://www.wetter.com/deutschland/kirchhain/DE0005476.html
+VARASK>>$ADRESSE>>Bitte die Seite:<br><a href="http://www.wetter.com" target="_blank">http://www.wetter.com</a><br>öffnen und dort den gesuchten Ort angeben.<br>Danach die URL übernehmen und weiter drücken.<br>z.B. https://www.wetter.com/deutschland/kirchhain/DE0005476.html
 
 PREASSIGMENT>>
 
 SET>>Device_to_switch>>MSwitch_Self
-SET>>comand_cmd1>>loadHTTP $URL
+SET>>comand_cmd1>>loadHTTP $ADRESSE
 SET>>PRIORITY>>1
 
 INQ>>AEVENT>>AMANUELL>>Event,Manuell>>Soll das einlesen der Daten manuell oder durch ein Event erfolgen?<br>Eine manuelle Auslösung ist immer möglich! 
