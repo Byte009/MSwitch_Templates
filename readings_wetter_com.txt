@@ -1,4 +1,4 @@
-INFO>>Dieses Device extrahiert aktuelle Wetterdaten aus wetter.com und stellt diese als Reading bereit.<br>Trigger und weiterführende Aktionen (Ausgabe) können definiert werden.
+SET>>INFO>>Dieses Device extrahiert aktuelle Wetterdaten aus wetter.com und stellt diese als Reading bereit.<br>Trigger und weiterführende Aktionen (Ausgabe) können definiert werden.
 
 
 ATTR>>SET>>MSwitch_Mode>>Notify
