@@ -47,6 +47,7 @@ PREASSIGMENT>>[$SELF:Vorhersage], [$SELF:Regenwahrscheinlichkeit], [$SELF:Sonnen
 SELECT>>comand_cmd1>>Wie lautet der entsprechende Ausgabebefehl des Gerätes ?
 SET>>PRIORITY>>2
 
+TEXT>>Das Device ist nun vollständig Konfiguriert und wird angelegt.
 
 
 
