@@ -1,0 +1,35 @@
+INFO>>Durchschalten von Kanälen, Inputlisten etc.pp.
+
+
+PREASSIGMENT>>
+
+TEXT>>Funktionsbeschreibung:<br>Bei jedem Auslösen ( Manuell oder per Trigger ) schaltet diese Mswitch ein Gerät anhand einer definierbaren Liste (z.B ffffff,ff0000,000000).<br>Diese Liste muss den komletten Schaltbefehl enthalten ( set device wird ergänzt ): rgb ffffff,rgb ff0000,rgb 000000<br>Wieterhin muss angegeben werden , welches Reading den aktuelle Status des Gerätes darstellt , in diesem Fall ist das rgb<br>Weiterhin muss angegeben werden , welche Werte das Reading annimmt , in diesem Fall ffffff,ff0000,000000<br>Beim schalten sucht sich das Device nun den aktuellen Stand des Readings z.B ff000. Dieser steht an Position 2 der Liste und somit wird nun Position 3 der Liste gesetzt , in diesem Fall 000000. 
+
+
+INQ>>TRIGGER>>MANUELL>>Ja,Nein>>Soll das Schalten durch ein Event eines anderen Gerätes ausgelöst werden ? 
+
+TRIGGER>>SELECT>>Trigger_device>>Welches Gerät soll das Durchschalten auslösen ?
+TRIGGER>>VAREVENT>>$event>>Welches Event des Gerätes löst das Schalten aus ?<br>Durch betätigen dieses Gerätes werden alle ankommenden Events angezeigt und können gewählt werden.<br>Alternativ kann das Event manuell angegeben werden.
+
+VARDEVICES>>$Device_to_switch>>Welches Gerät soll die Befehle durchschalten ?
+
+VARASK>>$reading>>Welches Reading des devices $Device_to_switch ist betroffen?
+
+VARASK>>$befehle>>Welche Befehle sollen ausgeführt werden<br>Liste der Befehle die nacheinander ( bei jeder Auslösung ) ausgefürt werden.<br>Die Liste ist durch ";" zu trennen.<br>z.B: input 1,input 2,input 3
+
+
+
+VARASK>>$result>>Welchen Wert nimmt das Reading $reading analog zu den gesendeten Befehlen $befehle an?<br>Die einzelnen Werte sind surch Komma zu trennen .<br>z.B: 1,2,3
+
+VARSET>>$gesamt>>$befehle:$result:$reading
+
+PREASSIGMENT>>$gesamt
+VARASK>>$ready>>Ist der Gesamtausdruck korrekt ?<br>Schaltbefehl : Set $Device_to_switch $befehle<br>Das Reading $reading nimmt beim Schalten folgende Werte an: $result
+PREASSIGMENT>>
+
+SET>>Device_to_switch>>$Device_to_switch
+SET>>comand_cmd1>>MSwitchtoggle $ready
+
+ATTR>>SET>>MSwitch_Extensions>>1
+ATTR>>SET>>eventMap>>/exec_cmd_1:MS_Toggle/
+ATTR>>SET>>webCmd>>MS_Toggle
