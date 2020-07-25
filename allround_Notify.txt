@@ -3,7 +3,7 @@ SET>>AUTOR>>Kai Christeleit
 SET>>Trigger_device>>GLOBAL
 VARDEVICES>>$dev_trigger>>Bitte Klingelschalter wählen<br>(Mehrfachauswahl möglich mit STRG+Klick).
 SET>>Trigger_Whitelist>>$dev_trigger
-EVENT>>$dev_event>>Bitte Event als Auslöser wählen ?<br>(Mehrfachauswahl, bearbeiten und Regex möglich!).
+VAREVENT>>$dev_event>>Bitte Event als Auslöser wählen ?<br>(Mehrfachauswahl, bearbeiten und Regex möglich!).
 SET>>MSwitch_cmd1>>$dev_event
 NOEDIT>>SET>>MSwitch_cmd1>>$dev_event
 EDIT>>VARASK>>$dev_event>>Bitte im Textfeld das EVENT eintragen. Regex ist möglich. Aktuelles EVENT: $dev_event
