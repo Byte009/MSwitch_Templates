@@ -1,4 +1,4 @@
-SET>>INFO>>Dieses Device ermölicht es mit einem Taster mehrere Aktionen zu schalten ( z.B. Farbwechsel etc. )<br>1*tastendruck - aktion 1, 2*Tastendruck - aktion 2, 3* Tastendruck - aktion 3 etc.pp.<br>Technisch Bedingt muss es eine kleine Wartezeit zwischen dem Tastendruck und der Aktionsausführung geben. Diese kann je nach eingesetzter Hardware und System vareieren. Sollte duie angesetzte 1 Sekunde zu klein sein , sollte dieser Wert erhöht werden.
+SET>>INFO>>Dieses Device ermölicht es mit einem Taster mehrere Aktionen zu schalten ( z.B. Farbwechsel etc. )<br>1*tastendruck - aktion 1, 2*Tastendruck - aktion 2, 3* Tastendruck - aktion 3 etc.pp.<br>Technisch Bedingt muss es eine kleine Wartezeit zwischen dem Tastendruck und der Aktionsausführung geben.<br>Diese kann je nach eingesetzter Hardware und System vareieren. Sollte duie angesetzte 1 Sekunde zu klein sein , sollte dieser Wert erhöht werden.
 
 SELECT>>Trigger_device>>Bitte den auslösenden Taster auswählen.
 EVENT>>MSwitch_cmd1>>Bitte das auslösende Event wählen.<br>(Event im Gerät auslösen und das gewünschte markieren).
