@@ -1,4 +1,9 @@
+
+#DEBUG>>on
+VARSET>>$DRUCK>>1
+
 SET>>INFO>>Dieses Device ermölicht es mit einem Taster mehrere Aktionen zu schalten ( z.B. Farbwechsel etc. )<br>1*tastendruck - aktion 1, 2*Tastendruck - aktion 2, 3* Tastendruck - aktion 3 etc.pp.<br>Technisch Bedingt muss es eine kleine Wartezeit zwischen dem Tastendruck und der Aktionsausführung geben.<br>Diese kann je nach eingesetzter Hardware und System vareieren. Sollte duie angesetzte 1 Sekunde zu klein sein , sollte dieser Wert erhöht werden.
+
 
 SELECT>>Trigger_device>>Bitte den auslösenden Taster auswählen.
 EVENT>>MSwitch_cmd1>>Bitte das auslösende Event wählen.<br>(Event im Gerät auslösen und das gewünschte markieren).
@@ -8,16 +13,26 @@ VARASK>>$WAIT>>Wie lange (in Sekunden) soll vor Ausführung auf einen ggf. weite
 
 PREASSIGMENT>>
 
-SELECT>>Device_to_switch>>Bitte das zu schaltendes Gerät auswählen.
+INQ>>ONE>>MORE>>ein Gerät,verschiedene Geräte>>Wird nur ein Gerät geschaltet, oder mehrere Verschiedene Geräte ?
+
+ONE>>VARDEVICES>>$DEVICE>>Bitte das zu schaltendes Gerät auswählen.
+
+MORE>>SELECT>>Device_to_switch>>Bitte das zu schaltendes Gerät auswählen.
+ONE>>SET>>Device_to_switch>>$DEVICE
 SELECT>>comand_cmd1>>Bitte den auszuführenden Befehl angeben.
+PREASSIGMENT>>$DRUCK
 VARASK>>$TASTE>>Der wievielte Tastendruck soll diesen Befehl schalten ?
+PREASSIGMENT>>
 SET>>delay_cmd1>>$WAIT
 SET>>condition_cmd1>>[$SELF:EVT_CMD1_COUNT] == $TASTE
 SET>>PRIORITY>>1
 SET>>cmd_repeat>>0
 SET>>cmd_repeat_time>>0
-REPEAT>>9>>Soll eine weitere Aktion für einen weiteren Tastendruck angelegt werden ?
+VARINC>>$DRUCK
+REPEAT>>13>>Soll eine weitere Aktion für einen weiteren Tastendruck angelegt werden ?
 
+
+PREASSIGMENT>>
 ATTR>>SET>>MSwitch_Reset_EVT_CMD1_COUNT>>100
 ATTR>>SET>>MSwitch_Expert>>1
 ATTR>>MSwitch_Delete_Delays>>1
@@ -30,8 +45,3 @@ SET>>cmd_repeat>>0
 SET>>cmd_repeat_time>>0
 
 TEXT>>Das Device ist nun vollständig Konfiguriert und wird angelegt.
-
-
-
-
-
