@@ -1,7 +1,7 @@
 #DEBUG>>on
 VARSET>>$DRUCK>>1
 
-SET>>INFO>>Dieses Device ermölicht es mit einem Taster mehrere Aktionen zu schalten ( z.B. Farbwechsel etc. )<br><br>1*tastendruck - aktion 1, 2*Tastendruck - aktion 2, 3* Tastendruck - aktion 3 etc.pp.<br><br>Technisch Bedingt muss es eine kleine Wartezeit zwischen dem Tastendruck und der Aktionsausführung geben.<br>Diese kann je nach eingesetzter Hardware und System vareieren.<br>Sollte die angesetzte 1 Sekunde zu klein sein , sollte dieser Wert erhöht werden.<br>Diese Anpassung kann über 'set DEVICE Wait X' gemacht werden.<br>&nbsp
+SET>>INFO>>Dieses Device ermölicht es mit einem Taster mehrere Aktionen zu schalten ( z.B. Farbwechsel etc. )<br><br>1*tastendruck - aktion 1, 2*Tastendruck - aktion 2, 3* Tastendruck - aktion 3 etc.pp.<br><br>Technisch Bedingt muss es eine kleine Wartezeit zwischen dem Tastendruck und der Aktionsausführung geben.<br>Diese kann je nach eingesetzter Hardware und System vareieren.<br>Sollte die angesetzte 1 Sekunde zu klein sein , sollte dieser Wert erhöht werden.<br>Diese Anpassung kann über 'set DEVICE Wait X' gemacht werden.<br> 
 
 SELECT>>Trigger_device>>Bitte den auslösenden Taster auswählen.
 EVENT>>MSwitch_cmd1>>Bitte das auslösende Event wählen.<br>(Event im Gerät auslösen und das gewünschte markieren).
@@ -56,4 +56,16 @@ SET>>cmd_repeat_time>>0
 SET>>READING>>Action>>Execute:
 SET>>READING>>Wait>>$WAIT
 
+INQ>>kontroll>>nokontroll>>ja,nein>>Soll eine Aktion angelegt werden , die den Empfang eines Tasterdrucks unmittelbar signalisiert?
+
+nein>>GOTO>>#end
+
+SELECT>>Device_to_switch>>Bitte das signalisierende Gerät auswählen.
+SELECT>>comand_cmd1>>Bitte den auszuführenden Befehl angeben.
+SET>>delay_cmd1>>0
+SET>>PRIORITY>>1
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+
+#end
 TEXT>>Das Device ist nun vollständig Konfiguriert und wird angelegt.
