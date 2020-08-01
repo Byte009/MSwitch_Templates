@@ -14,7 +14,9 @@ VARASK>>$TASTE>>Der wievielte Tastendruck soll diesen Befehl schalten ?
 SET>>delay_cmd1>>$WAIT
 SET>>condition_cmd1>>[$SELF:EVT_CMD1_COUNT] == $TASTE
 SET>>PRIORITY>>1
-REPEAT>>7>>Soll eine weitere Aktion für einen weiteren Tastendruck angelegt werden ?
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+REPEAT>>9>>Soll eine weitere Aktion für einen weiteren Tastendruck angelegt werden ?
 
 ATTR>>SET>>MSwitch_Reset_EVT_CMD1_COUNT>>100
 ATTR>>SET>>MSwitch_Expert>>1
@@ -24,8 +26,12 @@ SET>>Device_to_switch>>MSwitch_Self
 SET>>comand_cmd1>>reset_cmd_count 1
 SET>>delay_cmd1>>1
 SET>>PRIORITY>>2
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
 
 TEXT>>Das Device ist nun vollständig Konfiguriert und wird angelegt.
+
+
 
 
 
