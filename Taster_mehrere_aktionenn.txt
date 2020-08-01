@@ -1,9 +1,7 @@
-
 #DEBUG>>on
 VARSET>>$DRUCK>>1
 
 SET>>INFO>>Dieses Device ermölicht es mit einem Taster mehrere Aktionen zu schalten ( z.B. Farbwechsel etc. )<br><br>1*tastendruck - aktion 1, 2*Tastendruck - aktion 2, 3* Tastendruck - aktion 3 etc.pp.<br><br>Technisch Bedingt muss es eine kleine Wartezeit zwischen dem Tastendruck und der Aktionsausführung geben.<br>Diese kann je nach eingesetzter Hardware und System vareieren.<br>Sollte die angesetzte 1 Sekunde zu klein sein , sollte dieser Wert erhöht werden.<br>Diese Anpassung kann über 'set DEVICE Wait X' gemacht werden.<br>&nbsp
-
 
 SELECT>>Trigger_device>>Bitte den auslösenden Taster auswählen.
 EVENT>>MSwitch_cmd1>>Bitte das auslösende Event wählen.<br>(Event im Gerät auslösen und das gewünschte markieren).
@@ -31,7 +29,6 @@ SET>>cmd_repeat_time>>0
 VARINC>>$DRUCK
 REPEAT>>13>>Soll eine weitere Aktion für einen weiteren Tastendruck angelegt werden ?
 
-
 PREASSIGMENT>>
 ATTR>>SET>>MSwitch_Reset_EVT_CMD1_COUNT>>100
 ATTR>>SET>>MSwitch_Expert>>1
@@ -42,14 +39,12 @@ ATTR>>SET>>setList>>Action Wait
 ATTR>>SET>>stateFormat>>Action
 ATTR>>SET>>MSwitch_Delete_Delays>>1
 
-
 SET>>Device_to_switch>>MSwitch_Self
 SET>>comand_cmd1>>reset_cmd_count 1
 SET>>delay_cmd1>>[$SELF:Wait]
 SET>>PRIORITY>>2
 SET>>cmd_repeat>>0
 SET>>cmd_repeat_time>>0
-
 
 SET>>Device_to_switch>>MSwitch_Self
 SET>>comand_cmd1>>Action Execute: [$SELF:EVT_CMD1_COUNT]
