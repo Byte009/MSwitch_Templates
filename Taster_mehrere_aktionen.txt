@@ -56,9 +56,9 @@ SET>>cmd_repeat_time>>0
 SET>>READING>>Action>>Execute:
 SET>>READING>>Wait>>$WAIT
 
-INQ>>kontroll>>nokontroll>>ja,nein>>Soll eine Aktion angelegt werden , die den Empfang eines Tasterdrucks unmittelbar signalisiert?
+INQ>>kontroll>>nokontroll>>ja,nein>>Soll eine Aktion angelegt werden die den Empfang eines Tasterdrucks unmittelbar signalisiert?
 
-nein>>GOTO>>#end
+nokontroll>>GOTO>>#end
 
 SELECT>>Device_to_switch>>Bitte das signalisierende Gerät auswählen.
 SELECT>>comand_cmd1>>Bitte den auszuführenden Befehl angeben.
