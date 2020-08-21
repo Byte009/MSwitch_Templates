@@ -4,3 +4,4 @@ allround_Notify.txt|Erstellt MSwitch mit mehreren oder einzelnen Auslöse und Em
 readings_wetter_com.txt|erstellt Readings mit Wetterdaten aus wetter.com
 Help_not_executable.txt|Beschreibung Templatebefehle - nicht ausfuehrbar
 Taster_mehrere_aktionen.txt|Beschreibung
+Schaltuhr.txt|Beschreibung
