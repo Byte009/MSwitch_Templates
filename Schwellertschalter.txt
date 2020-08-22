@@ -1,0 +1,68 @@
+DEBUG>>off
+
+ATTR>>SET>>setList>>01_unterer_Schwellwert 01_oberer_Schwellwert
+ATTR>>SET>>readingList>>01_unterer_Schwellwert 01_oberer_Schwellwert
+ATTR>>SET>>MSwitch_Expert>>1
+ATTR>>SET>>MSwitch_Mode>>Notify
+ATTR>>SET>>MSwitch_Delete_Delays>>0
+
+SELECT>>Trigger_device>>Welches Gerät liefert die Schwellwerte ?
+VARASK>>$TRIGGER>> Wie heisst das Reading des gewählten Devices, welches die Schwellwerte enthält ?
+SET>>MSwitch_cmd1>>$TRIGGER:.*
+
+VARASK>>$LOW>> Bitte den unteren Schaltwert angeben ( numerischer wert ).
+VARASK>>$HIGH>> Bitte den oberen Schaltwert angeben ( numerischer wert ).
+
+SET>>READING>>01_unterer_Schwellwert>>$LOW
+SET>>READING>>01_oberer_Schwellwert>>$HIGH
+
+
+VARDEVICES>>$DEVICETOSWITCH>>Bitte das Gerät angeben, welches geschaltet werden soll.
+
+INQ>>FIRST>>NOFIRST>>Ja,Nein>>Soll bei erreichen des unteren Schwellwertes eine Schaltung vorgenommen werden ?
+
+
+NOFIRST>>GOTO>>#STANDART
+
+SET>>Device_to_switch>>$DEVICETOSWITCH
+SELECT>>comand_cmd1>>Bitte Schaltbefehl für unteren Schwellwert wählen.
+SET>>PRIORITY>>1
+SET>>condition_cmd1>>$EVTPART3#[sp]<#[sp][$SELF#[dp]01_unterer_Schwellwert]#[sp]AND#[sp][$SELF#[dp]last_cmd]#[sp]ne#[sp]"1"
+
+FIRST>>GOTO>>#STANDARTENDE
+
+#STANDART
+SET>>Device_to_switch>>MSwitch_Self
+SET>>comand_cmd1>>wait 0
+SET>>PRIORITY>>1
+SET>>condition_cmd1>>$EVTPART3#[sp]<#[sp][$SELF#[dp]01_unterer_Schwellwert]#[sp]AND#[sp][$SELF#[dp]last_cmd]#[sp]ne#[sp]"1"
+#STANDARTENDE
+
+
+
+INQ>>SECOND>>NOSECOND>>Ja,Nein>>Soll bei erreichen des oberen Schwellwertes eine Schaltung vorgenommen werden ?
+
+
+NOSECOND>>GOTO>>#STANDART1
+
+SET>>Device_to_switch>>$DEVICETOSWITCH
+SELECT>>comand_cmd1>>Bitte Schaltbefehl für oberen Schwellwert wählen.
+SET>>PRIORITY>>2
+SET>>condition_cmd1>>$EVTPART3#[sp]>#[sp][$SELF#[dp]01_oberer_Schwellwert]#[sp]AND#[sp][$SELF#[dp]last_cmd]#[sp]ne#[sp]"2"
+
+FIRST>>GOTO>>#STANDARTENDE1
+
+#STANDART1
+SET>>Device_to_switch>>MSwitch_Self
+SET>>comand_cmd1>>wait 0
+SET>>PRIORITY>>2
+SET>>condition_cmd1>>$EVTPART3#[sp]>#[sp][$SELF#[dp]01_oberer_Schwellwert]#[sp]AND#[sp][$SELF#[dp]last_cmd]#[sp]ne#[sp]"2"
+#STANDARTENDE1
+
+
+
+TEXT>>Das Gerät wurde konfiguriert und wirmit dem nächten Schritt angelegt ....
+
+
+
+
