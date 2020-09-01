@@ -23,7 +23,7 @@ ATTR>>SET>>MSwitch_Delete_Delays>>0
 SET>>READING>>status>>Timer_aus
 SET>>READING>>zeit>>01:00
 SET>>READING>>daily>>einmalig
-SET>>READING>>.Trigger_condition>>([$SELF#[dp]status]#[sp]eq#[sp]"Timer_an"#[sp]||#[sp]"$EVENT"#[sp]=#[ti]#[sp]m/(.*?)zeit#[dp].*/#[sp])
+SET>>READING>>.Trigger_condition>>([$SELF#[dp]status]#[sp]eq#[sp]"Timer_an"#[sp]||#[sp]$EVENT#[sp]=#[ti]#[sp]m/(.*?)zeit#[dp].*/#[sp])
 SET>>READING>>.Distributor>>zeit:.*=>cmd1 ID 1#[nl]
 
 SET>>Device_to_switch>>MSwitch_Self
