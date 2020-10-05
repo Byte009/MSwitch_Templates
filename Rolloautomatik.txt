@@ -1,0 +1,121 @@
+DEBUG>>off
+
+SET>>INFO>>Template zur automatischen Steuerung von z.B. Rollos in Verbindung mit dem Twilight Modul.<br>Dreistufige Steuerung  - Zeit, Licht, aus<br>Es können Zeiten bestimmt werden wann der frühste oder späteste Zeitpunkt zum hoch oder runter fahren sein soll.<br>Hinzu können Sonnenauf und Untergangswerte vom Twilight Modul ausgewählt werden. Unterschiedliche Werte für morgends<br>und abends sind möglich.<br><br>Desgign-Erklärung: Uhr Icon zum schalten der drei Möglichkeiten. rot: aus, blau:Lichtwert-Steuerung, grün: Zeit-Steuerung.<br>Unter der Uhr ist eine Zahl von 0-6. Diese zeigt den aktuellen Lichtwert aus dem Twilight Modul.<br>Sollte die Automatik beispielweise auf Zeit-Steuerung stehen aber ein Lichtwert gewählt werden, stellt die<br>Automatik sich auf Lichtwert-Steuerung. Gleiches gilt umgekehrt.<br> <br>
+
+ATTR>>SET>>MSwitch_Selftrigger_always>>1
+ATTR>>SET>>event-on-change-reading>>.*
+ATTR>>SET>>MSwitch_Expert>>1
+ATTR>>MSwitch_Delete_Delays>>0
+
+ATTR>>SET>>readingList>>saufgang mazeit mezeit suntergang aazeit aezeit daily status mlichtwert alichtwert
+
+ATTR>>SET>>setList>>mazeit:time mezeit:time aazeit:time aezeit:time saufgang:sr,sr_astro,sr_civil,sr_indoor,sr_naut,sr_weather suntergang:ss,ss_astro,ss_civil,ss_indoor,ss_naut,ss_weather status:automatik_an_zeit,automatik_an_licht,automatik_aus twilight_name:textField mlichtwert:0,1,2,3,4,5,6 alichtwert:0,1,2,3,4,5,6
+
+ATTR>>SET>>webCmd>>saufgang:mazeit:mezeit::mlichtwert:::suntergang:aazeit:aezeit::alichtwert
+
+ATTR>>SET>>webCmdLabel>>Morgens:Frühste Zeit:Späteste Zeit::Lichtwert::#[nl]:Abends:Frühste Zeit:Späteste Zeit::Lichtwert
+
+ATTR>>SET>>devStateIcon>>{#[nl]my $status = ReadingsVal($name,"status","ERROR");#[nl]my $tog = $status eq "automatik_aus" ? "automatik_an_zeit" : $status eq "automatik_an_zeit" ? "automatik_an_licht" : "automatik_aus";#[nl]my $pic = $status eq "automatik_aus" ? 'clock@red' : $status eq "automatik_an_licht" ? 'clock@blue' : 'clock@green';#[nl]my $light = ReadingsVal($name,"light","ERROR");#[nl]my $color = $light eq "0" #[nl]? "00194A" : $light eq "1" #[nl]? "0E3174" : $light eq "2" #[nl]? "1850BA" : $light eq "3" #[nl]? "02A4FA" : $light eq "4" #[nl]? "FF5800" : $light eq "5" #[nl]? "FC6B00" : "FD9302";#[nl]my $sa = $status eq "automatik_an_zeit" #[nl]? twilight(ReadingsVal($name,"twilight_name","ERROR"),ReadingsVal($name,"saufgang","ERROR"),ReadingsVal($name,"mazeit","ERROR"),ReadingsVal($name,"mezeit","ERROR")) #[nl]: $status eq "automatik_an_licht" ? ReadingsVal($name,"mlichtwert","ERROR") : "AUS";#[nl]my $su = $status eq "automatik_an_zeit" #[nl]? twilight(ReadingsVal($name,"twilight_name","ERROR"),ReadingsVal($name,"suntergang","ERROR"),ReadingsVal($name,"aazeit","ERROR"),ReadingsVal($name,"aezeit","ERROR"))#[nl]: $status eq "automatik_an_licht" ? ReadingsVal($name,"alichtwert","ERROR") : "AUS";#[nl]my $sat = "Rollos hoch:&nbsp;&nbsp;";#[nl]my $sut = "Rollos runter:";#[nl]"<div><table>   #[nl]<tr><td><center><a href=\"/fhem?cmd.dummy=set $name status ".$tog."&XHR=1\">".FW_makeImage($pic)."</center></a></td><td>$sat $sa</td></tr>#[nl]   <tr><td><center><font color=$color><b>$light</b></font></center></td><td>$sut $su</td></tr>#[nl]</table></div>" #[nl]}
+
+ATTR>>SET>>MSwitch_Snippet>>[Snippet:1]#[nl]twilight(ReadingsVal($SELF,"twilight_name","ERROR"),ReadingsVal($SELF,"saufgang",0),ReadingsVal($SELF,"mazeit",0),ReadingsVal($SELF,"mezeit",0))#[nl]#[nl][Snippet:2]#[nl]twilight(ReadingsVal($SELF,"twilight_name","ERROR"),ReadingsVal($SELF,"suntergang",0),ReadingsVal($SELF,"aazeit",0),ReadingsVal($SELF,"aezeit",0))#[nl]#[nl][Snippet:3]#[nl]$EVENT =~ m/(.*?)(status|mazeit|mezeit|aazeit|aezeit|saufgang|suntergang|sr|ss|(m|a)lichtwert|light).*/#[nl]#[nl][Snippet:4]#[nl][$EVTPART3] eq [$SELF:mlichtwert] AND [$SELF:status] eq "automatik_an_zeit" AND $hour < 12#[nl]#[nl][Snippet:5]#[nl][$EVTPART3] eq [$SELF:alichtwert] AND [$SELF:status] eq "automatik_an_zeit" AND  $hour > 12
+
+SET>>READING>>aazeit>>00:00
+SET>>READING>>aezeit>>23:55
+SET>>READING>>alichtwert>>1
+SET>>READING>>mazeit>>00:00
+SET>>READING>>mezeit>>23:55
+SET>>READING>>mlichtwert>>1
+SET>>READING>>saufgang>>sr_astro
+SET>>READING>>status>>automatik_aus
+SET>>READING>>suntergang>>ss_civil
+SET>>READING>>Timercontrol>>off
+SET>>READING>>.Trigger_condition>>[Snippet#[dp]3]
+SET>>READING>>.Trigger_time>>on~off~ononly[{[Snippet#[dp]1]}]~offonly[{[Snippet#[dp]2]}]~onoffonly
+SET>>READING>>.Distributor>>(m|a)lichtwert:.*=>cmd1 ID 3#[nl]light:.*=>cmd1 ID 4#[nl](MSwitch_Self):(status):(automatik_aus|automatik_an_licht)=>cmd2 ID 2#[nl]sr.*|ss.*|light.*=>cmd1 ID 1#[nl]mazeit.*|mezeit.*|aazeit.*|aezeit.*|saufgang.*|suntergang.*=>cmd2 ID 3#[nl]Switch_Self:status:automatik_an_zeit=>cmd1 ID 2#[nl]
+
+#### befehle feste abfolge
+
+SET>>Device_to_switch>>FreeCmd
+SET>>comand_cmd1>>setreading#[sp]$SELF#[sp]$EVTPART2#[sp]$EVTPART3
+SET>>ID>>1
+SET>>PRIORITY>>1
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+SET>>HIDEDISPLAY>>1
+
+SET>>Device_to_switch>>MSwitch_Self
+SET>>comand_cmd1>>reload_timer
+SET>>ID>>2
+SET>>PRIORITY>>1
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+SET>>HIDEDISPLAY>>1
+
+SET>>Device_to_switch>>MSwitch_Self
+SET>>comand_cmd1>>timer on
+SET>>comand_cmd2>>timer off
+SET>>ID>>2
+SET>>PRIORITY>>1
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+SET>>HIDEDISPLAY>>1
+
+SET>>Device_to_switch>>MSwitch_Self
+SET>>comand_cmd1>>status automatik_an_licht
+SET>>comand_cmd2>>status automatik_an_zeit
+SET>>ID>>3
+SET>>PRIORITY>>1
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+SET>>HIDEDISPLAY>>1
+
+SET>>Device_to_switch>>MSwitch_Self
+SET>>comand_cmd1>>exec_cmd_1
+SET>>condition_cmd1>>[$SELF:status] eq "automatik_an_licht" AND [$SELF:mlichtwert] eq [$SELF:light] AND $hour < 12
+SET>>ID>>4
+SET>>PRIORITY>>1
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+SET>>HIDEDISPLAY>>1
+
+SET>>Device_to_switch>>MSwitch_Self
+SET>>comand_cmd1>>exec_cmd_2
+SET>>condition_cmd1>>[$SELF:status] eq "automatik_an_licht" AND [$SELF:alichtwert] eq [$SELF:light] AND $hour > 11
+SET>>ID>>4
+SET>>PRIORITY>>1
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+SET>>HIDEDISPLAY>>1
+
+######
+
+# auswahl twilight als trigger
+PREASSIGMENT>>Twilight
+VARDEVICES>>$twilight>>Bitte das Twilight Device wählen.<br>Ohne ein Twilightdevice ist dieses MSwitch nicht nutzbar !
+SET>>READING>>twilight_name>>$twilight
+SET>>Trigger_device>>$twilight
+
+# auswahl rollos - anlage als gruppe
+
+VARDEVICES>>$Device_to_switch>>Bitte das/die zu schaltende(n) Rollo(s) wählen.<br>Mehrfachauswahl mit STGR*Maus.
+MSwitch_Device_Groups>>ROLLOGRUPPE->$Device_to_switch#[nl]
+SET>>Device_to_switch>>ROLLOGRUPPE
+SELECT>>comand_cmd1>>Wie lautet das Kommando zum öffnen der Rollos ?
+SELECT>>comand_cmd2>>Wielautet das Kommando zum schliessen der Rollos ?
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+
+TEXT>>Das Device ist nun vollständig Konfiguriert und kann nagelegt werden.
+
+
+
+
+
+
+
+
+
+
+
+
+
