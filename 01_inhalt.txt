@@ -2,7 +2,6 @@ einfaches_Notify.txt|Template zur Anlage eines einfachen notifys
 durchschalten_von_listen.txt|Keine Info
 allround_Notify.txt|Erstellt MSwitch mit mehreren oder einzelnen Auslöse und Empfangsgeräten
 readings_wetter_com.txt|erstellt Readings mit Wetterdaten aus wetter.com
-Help_not_executable.txt|Beschreibung Templatebefehle - nicht ausfuehrbar
 Taster_mehrere_aktionen.txt|Beschreibung
 Schwellertschalter.txt|Beschreibung
 Schaltuhr.txt|Beschreibung
