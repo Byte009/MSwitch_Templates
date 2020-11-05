@@ -1,4 +1,7 @@
+
+
 SET>>INFO>>MSwitch_Bridge Ikea-Fernbedienung/dimmbare Lampe<br><br>Dieses Template erstellt ein Mswitch, welches eine Lampe über eine IkeaFerbedienung schaltet.<br>Die Konfiguration ist abhängig von verschiedenen Systemen.<br>Folgende Funktionen sind verfügbar:<br>- heller/dunkler - kurzer Tastendruck<br>- dimmup/dimmdown - langer - Tastendruck<br>- Toggle<br>- Farbwechlser Tastendruck links/rechts (nur im Hue System)<br><br>
+
 
 DEBUG>>off
 
@@ -12,7 +15,9 @@ ATTR>>SET>>MSwitch_Modul_Mode>>1
 ATTR>>SET>>MSwitch_Extensions>>1
 ATTR>>SET>>icon>>tradfri_remote
 
-PREASSIGMENT>>MQTT2_zigbee_0xbc33acfffe860a95
+
+
+#PREASSIGMENT>>MQTT2_zigbee_0xbc33acfffe860a95
 VARDEVICES>>$fbname>>Bitte die Ikeas Fernbedienung wählen
 SET>>Trigger_device>>$fbname
 
@@ -28,6 +33,8 @@ VAREVENT>>$holdup>>Bitte Taste für DimupLong drücken und Event wählen.
 PREASSIGMENT>>.*:.*action:brightness_down_hold
 VAREVENT>>$holddown>>Bitte Taste für DimdownLong drücken und Event wählen.
 
+
+
 PREASSIGMENT>>.*:.*action:toggle
 EVENT>>MSwitch_cmd1>>Bitte Taste füt Toggle drücken und Event auswählen
 
@@ -37,7 +44,7 @@ SET>>MSwitch_cmd2>>.*release
 SET>>READING>>jpc>>10
 SET>>READING>>aktptc>>1
 
-PREASSIGMENT>>HUEDevice2
+PREASSIGMENT>> 
 VARDEVICES>>$zieldevice>>Bitte zu schaltende Lampe angeben:
 
 SET>>READING>>target>>$zieldevice
@@ -53,6 +60,7 @@ HM>>VARSET>>$range>>5
 SHELLY>>VARSET>>$STEP>>0.5
 SHELLY>>VARSET>>$range>>5
 
+
 HUE>>SET>>READING>>typ>>Hue
 HUE>>SET>>Device_to_switch>>$zieldevice
 HUE>>SET>>comand_cmd1>>pct [$SELF:aktpct] $STEP
@@ -63,6 +71,7 @@ HUE>>SET>>cmd_repeat_time>>0
 HUE>>SET>>HIDEDISPLAY>>0
 HUE>>SET>>ID>>2
 
+
 HM>>SET>>READING>>typ>>Homatic
 HM>>SET>>Device_to_switch>>$zieldevice
 HM>>SET>>comand_cmd1>>pct [$SELF:aktpct] 0 $STEP
@@ -72,6 +81,7 @@ HM>>SET>>cmd_repeat>>0
 HM>>SET>>cmd_repeat_time>>0
 HM>>SET>>HIDEDISPLAY>>0
 HM>>SET>>ID>>2
+
 
 SHELLY>>SET>>READING>>typ>>SHELLY
 SHELLY>>SET>>Device_to_switch>>$zieldevice
@@ -148,6 +158,9 @@ SET>>cmd_repeat_time>>0
 SET>>HIDEDISPLAY>>0
 SET>>ID>>3
 
+
+
+
 HM>>SET>>READING>>.Distributor>>$holdup=>cmd1 ID 3#[nl]$dimup=>cmd1 ID 1#[nl]$holddown=>cmd2 ID 3#[nl]$dimdown=>cmd2 ID 1#[nl]
 SHELLY>>SET>>READING>>.Distributor>>$holdup=>cmd1 ID 3#[nl]$dimup=>cmd1 ID 1#[nl]$holddown=>cmd2 ID 3#[nl]$dimdown=>cmd2 ID 1#[nl]
 HM>>GOTO>>#END
@@ -158,6 +171,7 @@ INQ>>COLOR>>NOCOLOR>>ja,nein>>Soll für die rechts/links Taste eine Farbauswahl 
 
 NOCOLOR>>SET>>READING>>.Distributor>>$holdup=>cmd1 ID 3#[nl]$dimup=>cmd1 ID 1#[nl]$holddown=>cmd2 ID 3#[nl]$dimdown=>cmd2 ID 1#[nl]
 NOCOLOR>>GOTO>>#END
+
 
 PREASSIGMENT>>.*:.*action:arrow_right_click
 VAREVENT>>$clickright>>Bitte Taste für Right drücken und Event wählen.
@@ -173,6 +187,8 @@ VAREVENT>>$holdleft>>Bitte Taste für LeftHold drücken und Event wählen.
 
 SET>>READING>>.Distributor>>$holdup=>cmd1 ID 3#[nl]$dimup=>cmd1 ID 1#[nl]$holddown=>cmd2 ID 3#[nl]$dimdown=>cmd2 ID 1#[nl]$holdright=>cmd1 ID 4#[nl]$holdleft=>cmd2 ID 4#[nl]$clickright=>cmd2 ID 5#[nl]$clickleft=>cmd1 ID 5#[nl]
 
+
+
 SET>>Device_to_switch>>$zieldevice
 SET>>comand_cmd1>>MSwitchtoggle rgb ff0000,rgb 00ff00,rgb 0000ff,rgb ffffff,rgb f7ff00,rgb 00ffff,rgb f700ff:rgb ff0000,rgb 00ff00,rgb 0000ff,rgb ffffff,rgb f7ff00,rgb 00ffff,rgb f700ff:MSwitch_self
 SET>>comand_cmd2>>MSwitchtoggle rgb f700ff,rgb 00ffff,rgb f7ff00,rgb ffffff,rgb 0000ff,rgb 00ff00,rgb ff0000:rgb f700ff,rgb 00ffff,rgb f7ff00,rgb ffffff,rgb 0000ff,rgb 00ff00,rgb ff0000:MSwitch_self
@@ -184,6 +200,7 @@ SET>>ID>>5
 
 SET>>Device_to_switch>>$zieldevice
 SET>>comand_cmd1>>MSwitchtoggle rgb FF0000,rgb FF0a00,rgb FF1400,rgb FF1e00,rgb FF2800,rgb FF3200,rgb FF3c00,rgb FF4600,rgb FF5000,rgb FF5a00,rgb FF6400,rgb FF6e00,rgb FF7800,rgb FF8200,rgb FF8c00,rgb FF9600,rgb FFa000,rgb FFaa00,rgb FFb400,rgb FFbe00,rgb FFc800,rgb FFd200,rgb FFdc00,rgb FFe600,rgb FFf000,rgb FFfa00,rgb ffFF00,rgb f5FF00,rgb ebFF00,rgb e1FF00,rgb d7FF00,rgb cdFF00,rgb c3FF00,rgb b9FF00,rgb afFF00,rgb a5FF00,rgb 9bFF00,rgb 91FF00,rgb 87FF00,rgb 7dFF00,rgb 73FF00,rgb 69FF00,rgb 5fFF00,rgb 55FF00,rgb 4bFF00,rgb 41FF00,rgb 37FF00,rgb 2dFF00,rgb 23FF00,rgb 19FF00,rgb 0fFF00,rgb 05FF00,rgb 00FF00,rgb 00FF0a,rgb 00FF14,rgb 00FF1e,rgb 00FF28,rgb 00FF32,rgb 00FF3c,rgb 00FF46,rgb 00FF50,rgb 00FF5a,rgb 00FF64,rgb 00FF6e,rgb 00FF78,rgb 00FF82,rgb 00FF8c,rgb 00FF96,rgb 00FFa0,rgb 00FFaa,rgb 00FFb4,rgb 00FFbe,rgb 00FFc8,rgb 00FFd2,rgb 00FFdc,rgb 00FFe6,rgb 00FFf0,rgb 00FFfa,rgb 00ffFF,rgb 00f5FF,rgb 00ebFF,rgb 00e1FF,rgb 00d7FF,rgb 00cdFF,rgb 00c3FF,rgb 00b9FF,rgb 00afFF,rgb 00a5FF,rgb 009bFF,rgb 0091FF,rgb 0087FF,rgb 007dFF,rgb 0073FF,rgb 0069FF,rgb 005fFF,rgb 0055FF,rgb 004bFF,rgb 0041FF,rgb 0037FF,rgb 002dFF,rgb 0023FF,rgb 0019FF,rgb 000fFF,rgb 0005FF,rgb 0000FF,rgb 0a00FF,rgb 1400FF,rgb 1e00FF,rgb 2800FF,rgb 3200FF,rgb 3c00FF,rgb 4600FF,rgb 5000FF,rgb 5a00FF,rgb 6400FF,rgb 6e00FF,rgb 7800FF,rgb 8200FF,rgb 8c00FF,rgb 9600FF,rgb a000FF,rgb aa00FF,rgb b400FF,rgb be00FF,rgb c800FF,rgb d200FF,rgb dc00FF,rgb e600FF,rgb f000FF,rgb fa00FF:rgb FF0000,rgb FF0a00,rgb FF1400,rgb FF1e00,rgb FF2800,rgb FF3200,rgb FF3c00,rgb FF4600,rgb FF5000,rgb FF5a00,rgb FF6400,rgb FF6e00,rgb FF7800,rgb FF8200,rgb FF8c00,rgb FF9600,rgb FFa000,rgb FFaa00,rgb FFb400,rgb FFbe00,rgb FFc800,rgb FFd200,rgb FFdc00,rgb FFe600,rgb FFf000,rgb FFfa00,rgb ffFF00,rgb f5FF00,rgb ebFF00,rgb e1FF00,rgb d7FF00,rgb cdFF00,rgb c3FF00,rgb b9FF00,rgb afFF00,rgb a5FF00,rgb 9bFF00,rgb 91FF00,rgb 87FF00,rgb 7dFF00,rgb 73FF00,rgb 69FF00,rgb 5fFF00,rgb 55FF00,rgb 4bFF00,rgb 41FF00,rgb 37FF00,rgb 2dFF00,rgb 23FF00,rgb 19FF00,rgb 0fFF00,rgb 05FF00,rgb 00FF00,rgb 00FF0a,rgb 00FF14,rgb 00FF1e,rgb 00FF28,rgb 00FF32,rgb 00FF3c,rgb 00FF46,rgb 00FF50,rgb 00FF5a,rgb 00FF64,rgb 00FF6e,rgb 00FF78,rgb 00FF82,rgb 00FF8c,rgb 00FF96,rgb 00FFa0,rgb 00FFaa,rgb 00FFb4,rgb 00FFbe,rgb 00FFc8,rgb 00FFd2,rgb 00FFdc,rgb 00FFe6,rgb 00FFf0,rgb 00FFfa,rgb 00ffFF,rgb 00f5FF,rgb 00ebFF,rgb 00e1FF,rgb 00d7FF,rgb 00cdFF,rgb 00c3FF,rgb 00b9FF,rgb 00afFF,rgb 00a5FF,rgb 009bFF,rgb 0091FF,rgb 0087FF,rgb 007dFF,rgb 0073FF,rgb 0069FF,rgb 005fFF,rgb 0055FF,rgb 004bFF,rgb 0041FF,rgb 0037FF,rgb 002dFF,rgb 0023FF,rgb 0019FF,rgb 000fFF,rgb 0005FF,rgb 0000FF,rgb 0a00FF,rgb 1400FF,rgb 1e00FF,rgb 2800FF,rgb 3200FF,rgb 3c00FF,rgb 4600FF,rgb 5000FF,rgb 5a00FF,rgb 6400FF,rgb 6e00FF,rgb 7800FF,rgb 8200FF,rgb 8c00FF,rgb 9600FF,rgb a000FF,rgb aa00FF,rgb b400FF,rgb be00FF,rgb c800FF,rgb d200FF,rgb dc00FF,rgb e600FF,rgb f000FF,rgb fa00FF:MSwitch_self
+
 SET>>comand_cmd2>>MSwitchtoggle rgb fa00FF,rgb f000FF,rgb e600FF,rgb dc00FF,rgb d200FF,rgb c800FF,rgb be00FF,rgb b400FF,rgb aa00FF,rgb a000FF,rgb 9600FF,rgb 8c00FF,rgb 8200FF,rgb 7800FF,rgb 6e00FF,rgb 6400FF,rgb 5a00FF,rgb 5000FF,rgb 4600FF,rgb 3c00FF,rgb 3200FF,rgb 2800FF,rgb 1e00FF,rgb 1400FF,rgb 0a00FF,rgb 0000FF,rgb 0005FF,rgb 000fFF,rgb 0019FF,rgb 0023FF,rgb 002dFF,rgb 0037FF,rgb 0041FF,rgb 004bFF,rgb 0055FF,rgb 005fFF,rgb 0069FF,rgb 0073FF,rgb 007dFF,rgb 0087FF,rgb 0091FF,rgb 009bFF,rgb 00a5FF,rgb 00afFF,rgb 00b9FF,rgb 00c3FF,rgb 00cdFF,rgb 00d7FF,rgb 00e1FF,rgb 00ebFF,rgb 00f5FF,rgb 00ffFF,rgb 00FFfa,rgb 00FFf0,rgb 00FFe6,rgb 00FFdc,rgb 00FFd2,rgb 00FFc8,rgb 00FFbe,rgb 00FFb4,rgb 00FFaa,rgb 00FFa0,rgb 00FF96,rgb 00FF8c,rgb 00FF82,rgb 00FF78,rgb 00FF6e,rgb 00FF64,rgb 00FF5a,rgb 00FF50,rgb 00FF46,rgb 00FF3c,rgb 00FF32,rgb 00FF28,rgb 00FF1e,rgb 00FF14,rgb 00FF0a,rgb 00FF00,rgb 05FF00,rgb 0fFF00,rgb 19FF00,rgb 23FF00,rgb 2dFF00,rgb 37FF00,rgb 41FF00,rgb 4bFF00,rgb 55FF00,rgb 5fFF00,rgb 69FF00,rgb 73FF00,rgb 7dFF00,rgb 87FF00,rgb 91FF00,rgb 9bFF00,rgb a5FF00,rgb afFF00,rgb b9FF00,rgb c3FF00,rgb cdFF00,rgb d7FF00,rgb e1FF00,rgb ebFF00,rgb f5FF00,rgb ffFF00,rgb FFfa00,rgb FFf000,rgb FFe600,rgb FFdc00,rgb FFd200,rgb FFc800,rgb FFbe00,rgb FFb400,rgb FFaa00,rgb FFa000,rgb FF9600,rgb FF8c00,rgb FF8200,rgb FF7800,rgb FF6e00,rgb FF6400,rgb FF5a00,rgb FF5000,rgb FF4600,rgb FF3c00,rgb FF3200,rgb FF2800,rgb FF1e00,rgb FF1400,rgb FF0a00,rgb FF0000:rgb fa00FF,rgb f000FF,rgb e600FF,rgb dc00FF,rgb d200FF,rgb c800FF,rgb be00FF,rgb b400FF,rgb aa00FF,rgb a000FF,rgb 9600FF,rgb 8c00FF,rgb 8200FF,rgb 7800FF,rgb 6e00FF,rgb 6400FF,rgb 5a00FF,rgb 5000FF,rgb 4600FF,rgb 3c00FF,rgb 3200FF,rgb 2800FF,rgb 1e00FF,rgb 1400FF,rgb 0a00FF,rgb 0000FF,rgb 0005FF,rgb 000fFF,rgb 0019FF,rgb 0023FF,rgb 002dFF,rgb 0037FF,rgb 0041FF,rgb 004bFF,rgb 0055FF,rgb 005fFF,rgb 0069FF,rgb 0073FF,rgb 007dFF,rgb 0087FF,rgb 0091FF,rgb 009bFF,rgb 00a5FF,rgb 00afFF,rgb 00b9FF,rgb 00c3FF,rgb 00cdFF,rgb 00d7FF,rgb 00e1FF,rgb 00ebFF,rgb 00f5FF,rgb 00ffFF,rgb 00FFfa,rgb 00FFf0,rgb 00FFe6,rgb 00FFdc,rgb 00FFd2,rgb 00FFc8,rgb 00FFbe,rgb 00FFb4,rgb 00FFaa,rgb 00FFa0,rgb 00FF96,rgb 00FF8c,rgb 00FF82,rgb 00FF78,rgb 00FF6e,rgb 00FF64,rgb 00FF5a,rgb 00FF50,rgb 00FF46,rgb 00FF3c,rgb 00FF32,rgb 00FF28,rgb 00FF1e,rgb 00FF14,rgb 00FF0a,rgb 00FF00,rgb 05FF00,rgb 0fFF00,rgb 19FF00,rgb 23FF00,rgb 2dFF00,rgb 37FF00,rgb 41FF00,rgb 4bFF00,rgb 55FF00,rgb 5fFF00,rgb 69FF00,rgb 73FF00,rgb 7dFF00,rgb 87FF00,rgb 91FF00,rgb 9bFF00,rgb a5FF00,rgb afFF00,rgb b9FF00,rgb c3FF00,rgb cdFF00,rgb d7FF00,rgb e1FF00,rgb ebFF00,rgb f5FF00,rgb ffFF00,rgb FFfa00,rgb FFf000,rgb FFe600,rgb FFdc00,rgb FFd200,rgb FFc800,rgb FFbe00,rgb FFb400,rgb FFaa00,rgb FFa000,rgb FF9600,rgb FF8c00,rgb FF8200,rgb FF7800,rgb FF6e00,rgb FF6400,rgb FF5a00,rgb FF5000,rgb FF4600,rgb FF3c00,rgb FF3200,rgb FF2800,rgb FF1e00,rgb FF1400,rgb FF0a00,rgb FF0000:MSwitch_self
 
 SET>>PRIORITY>>1
@@ -191,6 +208,7 @@ SET>>cmd_repeat>>0
 SET>>cmd_repeat_time>>0
 SET>>HIDEDISPLAY>>0
 SET>>ID>>4
+
 
 SET>>Device_to_switch>>MSwitch_Self
 SET>>comand_cmd1>>exec_cmd_1 ID 4
