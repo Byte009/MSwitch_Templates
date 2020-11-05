@@ -6,3 +6,4 @@ Taster_mehrere_aktionen.txt|Beschreibung
 Schwellertschalter.txt|Beschreibung
 Schaltuhr.txt|Beschreibung
 Rolloautomatik.txt|Beschreibung
+TradfriBridge.txt|Beschreibung
