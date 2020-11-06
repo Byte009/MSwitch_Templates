@@ -1,13 +1,14 @@
-
-
-SET>>INFO>>MSwitch_Bridge Ikea-Fernbedienung/dimmbare Lampe<br><br>Dieses Template erstellt ein Mswitch, welches eine Lampe über eine IkeaFerbedienung schaltet.<br>Die Konfiguration ist abhängig von verschiedenen Systemen.<br>Folgende Funktionen sind verfügbar:<br>- heller/dunkler - kurzer Tastendruck<br>- dimmup/dimmdown - langer - Tastendruck<br>- Toggle<br>- Farbwechlser Tastendruck links/rechts (nur im Hue System)<br><br>
-
-
 DEBUG>>off
 
+
+SET>>INFO>>MSwitch_Bridge Ikea-Fernbedienung/dimmbare Lampe<br><br>Dieses Template erstellt ein Mswitch, welches eine Lampe über eine IkeaFerbedienung schaltet.<br>Die Konfiguration ist abhängig von verschiedenen Systemen.<br>Folgende Funktionen sind verfügbar:<br>- heller/dunkler - kurzer Tastendruck<br>- dimmup/dimmdown - langer - Tastendruck<br>- Toggle<br>- (entweder) Farbwechlser Tastendruck links/rechts (nur im Hue System)<br>- (oder) Farbtemperatur Tastendruck links/rechts (nur im Hue System)<br><br>
+
+
+
+
 ATTR>>SET>>MSwitch_Expert>>1
-ATTR>>SET>>readingList>>aktpct jpc
-ATTR>>SET>>setList>>aktpct jpc:10,20,30
+ATTR>>SET>>readingList>>aktpct aktct jpc
+ATTR>>SET>>setList>>aktpct aktct jpc:10,20,30
 ATTR>>SET>>webCmd>>jpc
 ATTR>>SET>>webCmdLabel>>Dimm-Steps
 ATTR>>SET>>stateFormat>>Target: target Typ: typ
@@ -16,8 +17,7 @@ ATTR>>SET>>MSwitch_Extensions>>1
 ATTR>>SET>>icon>>tradfri_remote
 
 
-
-#PREASSIGMENT>>MQTT2_zigbee_0xbc33acfffe860a95
+PREASSIGMENT>>MQTT2_zigbee_0xbc33acfffe860a95
 VARDEVICES>>$fbname>>Bitte die Ikeas Fernbedienung wählen
 SET>>Trigger_device>>$fbname
 
@@ -33,25 +33,42 @@ VAREVENT>>$holdup>>Bitte Taste für DimupLong drücken und Event wählen.
 PREASSIGMENT>>.*:.*action:brightness_down_hold
 VAREVENT>>$holddown>>Bitte Taste für DimdownLong drücken und Event wählen.
 
-
-
 PREASSIGMENT>>.*:.*action:toggle
 EVENT>>MSwitch_cmd1>>Bitte Taste füt Toggle drücken und Event auswählen
 
+
+PREASSIGMENT>>.*:.*action:arrow_right_click
+VAREVENT>>$clickright>>Bitte Taste für Right drücken und Event wählen.
+
+PREASSIGMENT>>.*:.*action:arrow_left_click
+VAREVENT>>$clickleft>>Bitte Taste für Left drücken und Event wählen.
+
+PREASSIGMENT>>.*:.*action:arrow_right_hold
+VAREVENT>>$holdright>>Bitte Taste für RightHold drücken und Event wählen.
+
+PREASSIGMENT>>.*:.*action:arrow_left_hold
+VAREVENT>>$holdleft>>Bitte Taste für LeftHold drücken und Event wählen.
+
+
+
 SET>>MSwitch_cmd2>>.*release
+
+SET>>READING>>.Distributor>>$holdup=>cmd1 ID 3#[nl]$dimup=>cmd1 ID 1#[nl]$holddown=>cmd2 ID 3#[nl]$dimdown=>cmd2 ID 1#[nl]$clickright=>cmd2 ID 5#[nl]$clickleft=>cmd1 ID 5#[nl]$holdright=>cmd1 ID 4#[nl]$holdleft=>cmd2 ID 4#[nl]
+
+
 
 
 SET>>READING>>jpc>>10
 SET>>READING>>aktptc>>1
 
-PREASSIGMENT>> 
+PREASSIGMENT>>HUEDevice2
 VARDEVICES>>$zieldevice>>Bitte zu schaltende Lampe angeben:
 
 SET>>READING>>target>>$zieldevice
 
-INCSELECT>>HM,SHELLY,HUE>>Homatic-Dimmer,Shelly-Dimmer,Hue-Device>>Um was für einen Dimmertyp handelt es sich?<br>Entsprechend der Auswahl wird das Device in diversen Einstellungen an das angesprochenne System angepasst.<br><br>Die Einstellung Hue ermöglicht die Definition eines Farbwählers.
+INCSELECT>>HM,SHELLY,HUE>>Homatic-Dimmer,Shelly-Dimmer,Hue-Device>>Um was für einen Dimmertyp handelt es sich?<br>Entsprechend der Auswahl wird das Device in diversen Einstellungen an das angesprochenne System angepasst.
 
-HUE>>VARSET>>$STEP>>0.2
+HUE>>VARSET>>$STEP>>0.1
 HUE>>VARSET>>$range>>3
 
 HM>>VARSET>>$STEP>>0.5
@@ -68,7 +85,7 @@ HUE>>SET>>comand_cmd2>>pct [$SELF:aktpct] $STEP
 HUE>>SET>>PRIORITY>>2
 HUE>>SET>>cmd_repeat>>0
 HUE>>SET>>cmd_repeat_time>>0
-HUE>>SET>>HIDEDISPLAY>>0
+HUE>>SET>>HIDEDISPLAY>>1
 HUE>>SET>>ID>>2
 
 
@@ -79,7 +96,7 @@ HM>>SET>>comand_cmd2>>pct [$SELF:aktpct] 0 $STEP
 HM>>SET>>PRIORITY>>2
 HM>>SET>>cmd_repeat>>0
 HM>>SET>>cmd_repeat_time>>0
-HM>>SET>>HIDEDISPLAY>>0
+HM>>SET>>HIDEDISPLAY>>1
 HM>>SET>>ID>>2
 
 
@@ -90,7 +107,7 @@ SHELLY>>SET>>comand_cmd2>>pct [$SELF:aktpct]
 SHELLY>>SET>>PRIORITY>>2
 SHELLY>>SET>>cmd_repeat>>0
 SHELLY>>SET>>cmd_repeat_time>>0
-SHELLY>>SET>>HIDEDISPLAY>>0
+SHELLY>>SET>>HIDEDISPLAY>>1
 SHELLY>>SET>>ID>>2
 
 SET>>Device_to_switch>>$zieldevice
@@ -98,14 +115,14 @@ SET>>comand_cmd1>>toggle
 SET>>PRIORITY>>1
 SET>>cmd_repeat>>0
 SET>>cmd_repeat_time>>0
-SET>>HIDEDISPLAY>>0
+SET>>HIDEDISPLAY>>1
 
 SET>>Device_to_switch>>MSwitch_Self
 SET>>comand_cmd2>>del_delays
 SET>>PRIORITY>>1
 SET>>cmd_repeat>>0
 SET>>cmd_repeat_time>>0
-SET>>HIDEDISPLAY>>0
+SET>>HIDEDISPLAY>>1
 
 SET>>Device_to_switch>>MSwitch_Self
 SET>>comand_cmd1>>exec_cmd_1 ID 2
@@ -113,7 +130,7 @@ SET>>comand_cmd2>>exec_cmd_2 ID 2
 SET>>PRIORITY>>3
 SET>>cmd_repeat>>0
 SET>>cmd_repeat_time>>0
-SET>>HIDEDISPLAY>>0
+SET>>HIDEDISPLAY>>1
 SET>>ID>>2
 SET>>condition_cmd1>>[$SELF:aktpct] <100
 SET>>condition_cmd2>>[$SELF:aktpct] > 0
@@ -128,7 +145,7 @@ SET>>cmd_repeat>>0
 SET>>cmd_repeat_time>>0
 SET>>condition_cmd1>>[$zieldevice:pct] < 100
 SET>>condition_cmd2>>[$zieldevice:pct] > 0
-SET>>HIDEDISPLAY>>0
+SET>>HIDEDISPLAY>>1
 SET>>ID>>1
 
 SET>>Device_to_switch>>MSwitch_Self
@@ -137,7 +154,7 @@ SET>>comand_cmd2>>aktpct {[$SELF:aktpct]-$range}
 SET>>PRIORITY>>1
 SET>>cmd_repeat>>0
 SET>>cmd_repeat_time>>0
-SET>>HIDEDISPLAY>>0
+SET>>HIDEDISPLAY>>1
 SET>>ID>>2
 
 SET>>Device_to_switch>>MSwitch_Self
@@ -146,7 +163,7 @@ SET>>comand_cmd2>>aktpct [$zieldevice:pct]
 SET>>PRIORITY>>1
 SET>>cmd_repeat>>0
 SET>>cmd_repeat_time>>0
-SET>>HIDEDISPLAY>>0
+SET>>HIDEDISPLAY>>1
 SET>>ID>>3
 
 SET>>Device_to_switch>>MSwitch_Self
@@ -155,47 +172,29 @@ SET>>comand_cmd2>>exec_cmd_2 ID 2
 SET>>PRIORITY>>2
 SET>>cmd_repeat>>0
 SET>>cmd_repeat_time>>0
-SET>>HIDEDISPLAY>>0
+SET>>HIDEDISPLAY>>1
 SET>>ID>>3
 
 
 
-
-HM>>SET>>READING>>.Distributor>>$holdup=>cmd1 ID 3#[nl]$dimup=>cmd1 ID 1#[nl]$holddown=>cmd2 ID 3#[nl]$dimdown=>cmd2 ID 1#[nl]
-SHELLY>>SET>>READING>>.Distributor>>$holdup=>cmd1 ID 3#[nl]$dimup=>cmd1 ID 1#[nl]$holddown=>cmd2 ID 3#[nl]$dimdown=>cmd2 ID 1#[nl]
-HM>>GOTO>>#END
 SHELLY>>GOTO>>#END
-
-#ZWEIG HUE
-INQ>>COLOR>>NOCOLOR>>ja,nein>>Soll für die rechts/links Taste eine Farbauswahl eingerichtet werden ?
-
-NOCOLOR>>SET>>READING>>.Distributor>>$holdup=>cmd1 ID 3#[nl]$dimup=>cmd1 ID 1#[nl]$holddown=>cmd2 ID 3#[nl]$dimdown=>cmd2 ID 1#[nl]
-NOCOLOR>>GOTO>>#END
+HM>>GOTO>>#END
 
 
-PREASSIGMENT>>.*:.*action:arrow_right_click
-VAREVENT>>$clickright>>Bitte Taste für Right drücken und Event wählen.
+INCSELECT>>FOLOR,TEMP,NO>>Farbwechsel,Farbemperatur,nicht belegt>>Sollen die links/rechts Tasten der Fernbedienung belegt werden ?.
 
-PREASSIGMENT>>.*:.*action:arrow_left_click
-VAREVENT>>$clickleft>>Bitte Taste für Left drücken und Event wählen.
-
-PREASSIGMENT>>.*:.*action:arrow_right_hold
-VAREVENT>>$holdright>>Bitte Taste für RightHold drücken und Event wählen.
-
-PREASSIGMENT>>.*:.*action:arrow_left_hold
-VAREVENT>>$holdleft>>Bitte Taste für LeftHold drücken und Event wählen.
-
-SET>>READING>>.Distributor>>$holdup=>cmd1 ID 3#[nl]$dimup=>cmd1 ID 1#[nl]$holddown=>cmd2 ID 3#[nl]$dimdown=>cmd2 ID 1#[nl]$holdright=>cmd1 ID 4#[nl]$holdleft=>cmd2 ID 4#[nl]$clickright=>cmd2 ID 5#[nl]$clickleft=>cmd1 ID 5#[nl]
+NO>>GOTO>>#END
+TEMP>>GOTO>>#TEMP
 
 
-
+###################################### start Farbwechsel 
 SET>>Device_to_switch>>$zieldevice
 SET>>comand_cmd1>>MSwitchtoggle rgb ff0000,rgb 00ff00,rgb 0000ff,rgb ffffff,rgb f7ff00,rgb 00ffff,rgb f700ff:rgb ff0000,rgb 00ff00,rgb 0000ff,rgb ffffff,rgb f7ff00,rgb 00ffff,rgb f700ff:MSwitch_self
 SET>>comand_cmd2>>MSwitchtoggle rgb f700ff,rgb 00ffff,rgb f7ff00,rgb ffffff,rgb 0000ff,rgb 00ff00,rgb ff0000:rgb f700ff,rgb 00ffff,rgb f7ff00,rgb ffffff,rgb 0000ff,rgb 00ff00,rgb ff0000:MSwitch_self
 SET>>PRIORITY>>1
 SET>>cmd_repeat>>0
 SET>>cmd_repeat_time>>0
-SET>>HIDEDISPLAY>>0
+SET>>HIDEDISPLAY>>1
 SET>>ID>>5
 
 SET>>Device_to_switch>>$zieldevice
@@ -206,7 +205,7 @@ SET>>comand_cmd2>>MSwitchtoggle rgb fa00FF,rgb f000FF,rgb e600FF,rgb dc00FF,rgb 
 SET>>PRIORITY>>1
 SET>>cmd_repeat>>0
 SET>>cmd_repeat_time>>0
-SET>>HIDEDISPLAY>>0
+SET>>HIDEDISPLAY>>1
 SET>>ID>>4
 
 
@@ -216,16 +215,91 @@ SET>>comand_cmd2>>exec_cmd_2 ID 4
 SET>>PRIORITY>>2
 SET>>cmd_repeat>>0
 SET>>cmd_repeat_time>>0
-SET>>HIDEDISPLAY>>0
+SET>>HIDEDISPLAY>>1
 SET>>ID>>4
 SET>>delay_cmd1>>$STEP
 SET>>delay_cmd2>>$STEP
 
-#END
+GOTO>>#END
+###################################### ende Farbwechsel 
 
-SET>>READING>>.info>>Das Gerät ist als Tradfri-Remote - $zieldevice Bridge konfiguriert<br>Weitere Einstellungen sind nicht Notwendig<br><br>Um Einstellungen zu ändern muss das Attribut MSwitch_Modul_Mode auf 0 gesetzt werden.
+
+
+###################################### start Farbtemperatur
+#TEMP
+
+SET>>Device_to_switch>>$zieldevice
+SET>>comand_cmd1>>MSwitchtoggle ct 154,ct 200,ct 250,ct 300,ct 350,ct 400,ct 450,ct 500:ct 154,ct 200,ct 250,ct 300,ct 350,ct 400,ct 450,ct 500:MSwitch_self
+SET>>comand_cmd2>>MSwitchtoggle ct 500,ct 450,ct 400,ct 350,ct 300,ct 250,ct 200,ct 154:ct 500,ct 450,ct 400,ct 350,ct 300,ct 250,ct 200,ct 154:MSwitch_self
+SET>>PRIORITY>>1
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+SET>>HIDEDISPLAY>>1
+SET>>ID>>5
+
+
+SET>>Device_to_switch>>MSwitch_Self
+SET>>comand_cmd1>>exec_cmd_1 ID 6
+SET>>comand_cmd2>>exec_cmd_2 ID 6
+SET>>PRIORITY>>2
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+SET>>HIDEDISPLAY>>1
+SET>>ID>>4
+SET>>delay_cmd1>>$STEP
+SET>>delay_cmd2>>$STEP
+
+
+SET>>Device_to_switch>>FreeCmd
+SET>>comand_cmd1>>{#[nl]my#[sp]$ct#[sp]=#[sp]ReadingsVal(#[sp]"$zieldevice"#[ko]#[sp]"ct"#[ko]#[sp]"154"#[sp])#[se]#[nl]my#[sp]@ctraw#[sp]=#[sp]split#[sp](/#[sp]/#[ko]$ct)#[se]#[nl]fhem#[sp]("setreading#[sp]$SELF#[sp]aktct#[sp]$ctraw[0]")#[se]#[nl]}
+SET>>comand_cmd2>>{#[nl]my#[sp]$ct#[sp]=#[sp]ReadingsVal(#[sp]"$zieldevice"#[ko]#[sp]"ct"#[ko]#[sp]"154"#[sp])#[se]#[nl]my#[sp]@ctraw#[sp]=#[sp]split#[sp](/#[sp]/#[ko]$ct)#[se]#[nl]fhem#[sp]("setreading#[sp]$SELF#[sp]aktct#[sp]$ctraw[0]")#[se]#[nl]}
+SET>>PRIORITY>>1
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+SET>>HIDEDISPLAY>>1
+SET>>ID>>4
+
+
+SET>>Device_to_switch>>MSwitch_Self
+SET>>comand_cmd1>>aktct {[$SELF:aktct]+10}
+SET>>comand_cmd2>>aktct {[$SELF:aktct]-10}
+SET>>PRIORITY>>1
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+SET>>HIDEDISPLAY>>1
+SET>>ID>>6
+
+
+SET>>Device_to_switch>>$zieldevice
+SET>>comand_cmd1>>ct [$SELF:aktct] $STEP
+SET>>comand_cmd2>>ct [$SELF:aktct] $STEP
+SET>>PRIORITY>>2
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+SET>>HIDEDISPLAY>>1
+SET>>ID>>6
+
+SET>>Device_to_switch>>MSwitch_Self
+SET>>comand_cmd1>>exec_cmd_1 ID 6
+SET>>comand_cmd2>>exec_cmd_2 ID 6
+SET>>PRIORITY>>3
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+SET>>HIDEDISPLAY>>1
+SET>>ID>>6
+SET>>delay_cmd1>>$STEP
+SET>>delay_cmd2>>$STEP
+
+
+###################################### ende Farbtemperatur
+
+
+
+#END
+SET>>READING>>.info>>Das Gerät ist als Tradfri-Remote - $zieldevice Bridge konfiguriert<br>Weitere Einstellungen sind nicht Notwendig
 
 HUE>>TEXT>>Das Device wurde für das Hue-System konfiguriert und kann angelegt werden.
 SHELLY>>TEXT>>Das Device wurde für das Shelly-System konfiguriert und kann angelegt werden.
 HM>>TEXT>>Das Device wurde für das Homatic-System konfiguriert und kann angelegt werden.
+
 
