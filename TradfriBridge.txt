@@ -17,7 +17,7 @@ ATTR>>SET>>MSwitch_Extensions>>1
 ATTR>>SET>>icon>>tradfri_remote
 
 
-PREASSIGMENT>>MQTT2_zigbee_0xbc33acfffe860a95
+#PREASSIGMENT>>MQTT2_zigbee_0xbc33acfffe860a95
 VARDEVICES>>$fbname>>Bitte die Ikeas Fernbedienung wählen
 SET>>Trigger_device>>$fbname
 
@@ -61,7 +61,8 @@ SET>>READING>>.Distributor>>$holdup=>cmd1 ID 3#[nl]$dimup=>cmd1 ID 1#[nl]$holddo
 SET>>READING>>jpc>>10
 SET>>READING>>aktptc>>1
 
-PREASSIGMENT>>HUEDevice2
+#PREASSIGMENT>>HUEDevice2
+PREASSIGMENT>>bitte wählen ....
 VARDEVICES>>$zieldevice>>Bitte zu schaltende Lampe angeben:
 
 SET>>READING>>target>>$zieldevice
