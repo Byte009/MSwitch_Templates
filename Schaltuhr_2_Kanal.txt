@@ -1,0 +1,56 @@
+SET>>INFO>>Erstell ein Zeitschaltuhr,die über das Frontend gestellt werden kann.<br>Auslösung kann täglich oder einmalig sein.<br>In der Grundkonfiguration können zwei Befehleausgeführt werden ( Einschaltzeit / Ausschaltzeit )<br><br>
+
+DEBUG>>off
+PREASSIGMENT>>
+
+TEXT>>Das Device wird weitestgehend vorkonfiguriert und es müssen lediglich die Schaltbefehle angegeben werden.<br>Schaltzeite und Typ kann später im Frontend eingestellt werden.
+
+
+SET>>Time_cmd1>>[{ReadingsVal("$name","zeit",0)}]
+SET>>Time_cmd2>>[{ReadingsVal("$name","zeit1",0)}]
+
+ATTR>>SET>>setList>>zeit:time zeit1:time status:Timer_an,Timer_aus daily:einmalig,täglich
+ATTR>>SET>>readingList>>zeit zeit1 status daily
+ATTR>>SET>>webCmd>>zeit:zeit1:daily:status
+ATTR>>SET>>MSwitch_Expert>>1
+ATTR>>SET>>MSwitch_Mode>>Notify
+ATTR>>SET>>devStateIcon>>Timer_aus:clock@red:status+Timer_an Timer_an:clock@green:status+Timer_aus
+ATTR>>SET>>stateFormat>>status#[nl]daily von zeit bis zeit1
+ATTR>>SET>>MSwitch_Selftrigger_always>>1
+ATTR>>SET>>MSwitch_Condition_Time>>1
+ATTR>>SET>>MSwitch_Delete_Delays>>0
+
+SET>>READING>>status>>Timer_aus
+SET>>READING>>zeit>>01:00
+SET>>READING>>zeit1>>01:00
+SET>>READING>>daily>>einmalig
+SET>>READING>>.Trigger_condition>>([$SELF#[dp]status]#[sp]eq#[sp]"Timer_an"#[sp]||#[sp]$EVENT#[sp]=#[ti]#[sp]m/(.*?)zeit#[dp].*/#[sp])
+SET>>READING>>.Distributor>>zeit:.*=>cmd1 ID 1#[nl]zeit1:.*=>cmd1 ID 1#[nl]
+
+SET>>Device_to_switch>>MSwitch_Self
+SET>>comand_cmd1>>reload_timer
+SET>>delay_cmd1>>00:00:01
+SET>>ID>>1
+SET>>HIDE>>1
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+
+SET>>Device_to_switch>>MSwitch_Self
+SET>>comand_cmd1>>[FREECMD] set $SELF status Timer_aus
+SET>>condition_cmd1>>[$SELF:daily] eq "einmalig"
+SET>>HIDE>>1
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+SET>>PRIORITY>>100
+SET>>delay_cmd1>>00:00:03
+
+VARASK>>$BEFEHL>>Bitte den vollständigen Anschchaltbefehl angeben, der zur angegebenen Zeit ausgeführt werden soll.<br>z.B: set DEVICE on<br><br>Diese Zeile kann auch später angegeben werden oder im Frontend geändert werden
+VARASK>>$BEFEHL1>>Bitte den vollständigen zweiten Auschaltbefehl angeben.<br>z.B: set DEVICE off<br><br>Diese Zeile kann auch später angegeben oder im Frontend geändert werden
+
+SET>>Device_to_switch>>FreeCmd
+SET>>comand_cmd1>>$BEFEHL;
+SET>>comand_cmd2>>$BEFEHL1;
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+
+TEXT>>Das Device ist nun vollständig Konfiguriert und kann angelegt werden
