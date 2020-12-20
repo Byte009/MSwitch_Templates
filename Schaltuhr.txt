@@ -3,7 +3,7 @@ MINIMAL>>4
 DEBUG>>off
 PREASSIGMENT>>
 
-TEXT>>Das Device wird weitestgehend vorkonfiguriert und es müssen lediglich die Schaltbefehle angegeben werden.<br>Schaltzeite und Typ kann später im Frontend eingestellt werden.
+TEXT>>Das Device wird weitestgehend vorkonfiguriert und es müssen lediglich die Schaltbefehle angegeben werden.<br>Schaltzeit und Typ kann später im Frontend eingestellt werden.
 
 
 SET>>Time_cmd1>>TIME={ReadingsVal("$name","zeit",0)}
