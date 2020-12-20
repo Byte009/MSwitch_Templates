@@ -1,5 +1,5 @@
 SET>>INFO>>Erstell ein Zeitschaltuhr,die über das Frontend gestellt werden kann.<br>Auslösung kann täglich oder einmalig sein.<br>In der Grundkonfiguration können zwei Befehleausgeführt werden ( erweiterbar ) , einer dieser Befehle kann zeitverzögert ausgeführt werden.<br> <br>
-
+MINIMAL>>4
 DEBUG>>off
 PREASSIGMENT>>
 
