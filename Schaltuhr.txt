@@ -6,8 +6,8 @@ PREASSIGMENT>>
 TEXT>>Das Device wird weitestgehend vorkonfiguriert und es müssen lediglich die Schaltbefehle angegeben werden.<br>Schaltzeite und Typ kann später im Frontend eingestellt werden.
 
 
-SET>>Time_cmd1>>[{ReadingsVal("$name","zeit",0)}]
-SET>>Time_cmd2>>[{ReadingsVal("$name","zeit",0)}]
+SET>>Time_cmd1>>TIME={ReadingsVal("$name","zeit",0)}
+SET>>Time_cmd2>>TIME={ReadingsVal("$name","zeit",0)}
 
 ATTR>>SET>>setList>>zeit:time status:Timer_an,Timer_aus daily:einmalig,täglich
 ATTR>>SET>>readingList>>zeit status daily
