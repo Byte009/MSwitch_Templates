@@ -17,7 +17,7 @@ ATTR>>SET>>webCmdLabel>>Morgens:Frühste Zeit:Späteste Zeit::Lichtwert::#[nl]:A
 
 ATTR>>SET>>devStateIcon>>{#[nl]my $status = ReadingsVal($name,"status","ERROR");#[nl]my $tog = $status eq "automatik_aus" ? "automatik_an_zeit" : $status eq "automatik_an_zeit" ? "automatik_an_licht" : "automatik_aus";#[nl]my $pic = $status eq "automatik_aus" ? 'clock@red' : $status eq "automatik_an_licht" ? 'clock@blue' : 'clock@green';#[nl]my $light = ReadingsVal($name,"light","ERROR");#[nl]my $color = $light eq "0" #[nl]? "00194A" : $light eq "1" #[nl]? "0E3174" : $light eq "2" #[nl]? "1850BA" : $light eq "3" #[nl]? "02A4FA" : $light eq "4" #[nl]? "FF5800" : $light eq "5" #[nl]? "FC6B00" : "FD9302";#[nl]my $sa = $status eq "automatik_an_zeit" #[nl]? twilight(ReadingsVal($name,"twilight_name","ERROR"),ReadingsVal($name,"saufgang","ERROR"),ReadingsVal($name,"mazeit","ERROR"),ReadingsVal($name,"mezeit","ERROR")) #[nl]: $status eq "automatik_an_licht" ? ReadingsVal($name,"mlichtwert","ERROR") : "AUS";#[nl]my $su = $status eq "automatik_an_zeit" #[nl]? twilight(ReadingsVal($name,"twilight_name","ERROR"),ReadingsVal($name,"suntergang","ERROR"),ReadingsVal($name,"aazeit","ERROR"),ReadingsVal($name,"aezeit","ERROR"))#[nl]: $status eq "automatik_an_licht" ? ReadingsVal($name,"alichtwert","ERROR") : "AUS";#[nl]my $sat = "Rollos hoch:&nbsp;&nbsp;";#[nl]my $sut = "Rollos runter:";#[nl]"<div><table>   #[nl]<tr><td><center><a href=\"/fhem?cmd.dummy=set $name status ".$tog."&XHR=1\">".FW_makeImage($pic)."</center></a></td><td>$sat $sa</td></tr>#[nl]   <tr><td><center><font color=$color><b>$light</b></font></center></td><td>$sut $su</td></tr>#[nl]</table></div>" #[nl]}
 
-ATTR>>SET>>MSwitch_Snippet>>[Snippet:1]#[nl]twilight(ReadingsVal($SELF,"twilight_name","ERROR"),ReadingsVal($SELF,"saufgang",0),ReadingsVal($SELF,"mazeit",0),ReadingsVal($SELF,"mezeit",0))#[nl]#[nl][Snippet:2]#[nl]twilight(ReadingsVal($SELF,"twilight_name","ERROR"),ReadingsVal($SELF,"suntergang",0),ReadingsVal($SELF,"aazeit",0),ReadingsVal($SELF,"aezeit",0))#[nl]#[nl][Snippet:3]#[nl]$EVENT =~ m/(.*?)(status|mazeit|mezeit|aazeit|aezeit|saufgang|suntergang|sr|ss|(m|a)lichtwert|light).*/#[nl]#[nl][Snippet:4]#[nl][$EVTPART3] eq [$SELF:mlichtwert] AND [$SELF:status] eq "automatik_an_zeit" AND $hour < 12#[nl]#[nl][Snippet:5]#[nl][$EVTPART3] eq [$SELF:alichtwert] AND [$SELF:status] eq "automatik_an_zeit" AND  $hour > 12
+ATTR>>SET>>MSwitch_Snippet>>[Snippet:1]#[nl]{twilight(ReadingsVal($SELF,"twilight_name","ERROR"),ReadingsVal($SELF,"saufgang",0),ReadingsVal($SELF,"mazeit",0),ReadingsVal($SELF,"mezeit",0))}#[nl]#[nl][Snippet:2]#[nl]{twilight(ReadingsVal($SELF,"twilight_name","ERROR"),ReadingsVal($SELF,"suntergang",0),ReadingsVal($SELF,"aazeit",0),ReadingsVal($SELF,"aezeit",0))}#[nl]#[nl][Snippet:3]#[nl]$EVENT =~ m/(.*?)(status|mazeit|mezeit|aazeit|aezeit|saufgang|suntergang|sr|ss|(m|a)lichtwert|light).*/#[nl]#[nl][Snippet:4]#[nl][$EVTPART3] eq [$SELF:mlichtwert] AND [$SELF:status] eq "automatik_an_zeit" AND $hour < 12#[nl]#[nl][Snippet:5]#[nl][$EVTPART3] eq [$SELF:alichtwert] AND [$SELF:status] eq "automatik_an_zeit" AND  $hour > 12
 
 SET>>READING>>aazeit>>00:00
 SET>>READING>>aezeit>>23:55
@@ -30,7 +30,11 @@ SET>>READING>>status>>automatik_aus
 SET>>READING>>suntergang>>ss_civil
 SET>>READING>>Timercontrol>>off
 SET>>READING>>.Trigger_condition>>[Snippet#[dp]3]
-SET>>READING>>.Trigger_time>>on~off~ononly[{[Snippet#[dp]1]}]~offonly[{[Snippet#[dp]2]}]~onoffonly
+
+SET>>Time_cmd1>>TIME=[Snippet#[dp]1]
+SET>>Time_cmd2>>TIME=[Snippet#[dp]2]
+
+
 SET>>READING>>.Distributor>>(m|a)lichtwert:.*=>cmd1 ID 3#[nl]light:.*=>cmd1 ID 4#[nl](MSwitch_Self):(status):(automatik_aus|automatik_an_licht)=>cmd2 ID 2#[nl]sr.*|ss.*|light.*=>cmd1 ID 1#[nl]mazeit.*|mezeit.*|aazeit.*|aezeit.*|saufgang.*|suntergang.*=>cmd2 ID 3#[nl]Switch_Self:status:automatik_an_zeit=>cmd1 ID 2#[nl]
 
 #### befehle feste abfolge
@@ -106,16 +110,4 @@ SET>>cmd_repeat>>0
 SET>>cmd_repeat_time>>0
 
 TEXT>>Das Device ist nun vollständig Konfiguriert und kann nagelegt werden.
-
-
-
-
-
-
-
-
-
-
-
-
 
