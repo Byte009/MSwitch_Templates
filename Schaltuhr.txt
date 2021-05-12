@@ -1,4 +1,5 @@
 SET>>INFO>>Erstell ein Zeitschaltuhr,die über das Frontend gestellt werden kann.<br>Auslösung kann täglich oder einmalig sein.<br>In der Grundkonfiguration können zwei Befehleausgeführt werden ( erweiterbar ) , einer dieser Befehle kann zeitverzögert ausgeführt werden.<br> <br>
+Alternativ kann dieses Device über Sunset und Sunrise gesteuert werden
 MINIMAL>>4
 DEBUG>>off
 PREASSIGMENT>>
@@ -6,16 +7,52 @@ PREASSIGMENT>>
 TEXT>>Das Device wird weitestgehend vorkonfiguriert und es müssen lediglich die Schaltbefehle angegeben werden.<br>Schaltzeit und Typ kann später im Frontend eingestellt werden.
 
 
+
+
+
+INQ>>nosunset>>sunset>>Zeitgesteuert,Sonnenstandgesteuert>>Soll es sich um ein rein zeitgesteuertes Device handeln, oder um ein Sonnenaufgang-/untergang gesteuertes ?
+
+sunset>>GOTO>>#Sunsetgesteuert
+nosunset>>GOTO>>#Zeitgesteuert
+
+
+
+# Auswahl je nach Modus
+
+#Zeitgesteuert
+
 SET>>Time_cmd1>>TIME={ReadingsVal("$name","zeit",0)}
 SET>>Time_cmd2>>TIME={ReadingsVal("$name","zeit",0)}
-
+SET>>READING>>.Distributor>>zeit:.*=>cmd1 ID 1#[nl]
 ATTR>>SET>>setList>>zeit:time status:Timer_an,Timer_aus daily:einmalig,täglich
 ATTR>>SET>>readingList>>zeit status daily
 ATTR>>SET>>webCmd>>zeit:daily:status
+GOTO>>#allgemein
+
+
+
+
+#Sunsetgesteuert
+
+SET>>Time_cmd1>>TIME={[$SELF:sun]([$SELF:operator]([$SELF:zeit]*60))}
+SET>>READING>>.Distributor>>(zeit|sun|operator):.*=>cmd1 ID 1#[nl]
+ATTR>>SET>>setList>>zeit:selectnumbers,0,1,60,0,lin status:Timer_an,Timer_aus daily:einmalig,täglich sun:sunset,sunrise operator:+,-
+ATTR>>SET>>readingList>>zeit status daily sun operator
+ATTR>>SET>>webCmd>>sun:operator:zeit:daily:status
+SET>>READING>>zeit>>0
+SET>>READING>>operator>>+
+SET>>READING>>sun>>sunset
+GOTO>>#allgemein
+
+#Modusauswahl ende
+
+
+#allgemein
+
 ATTR>>SET>>MSwitch_Expert>>1
 ATTR>>SET>>MSwitch_Mode>>Notify
 ATTR>>SET>>devStateIcon>>Timer_aus:clock@red:status+Timer_an Timer_an:clock@green:status+Timer_aus
-ATTR>>SET>>stateFormat>>status#[nl]daily um zeit
+ATTR>>SET>>stateFormat>>status#[nl]daily um Next_Timer
 ATTR>>SET>>MSwitch_Selftrigger_always>>1
 ATTR>>SET>>MSwitch_Condition_Time>>1
 ATTR>>SET>>MSwitch_Delete_Delays>>0
@@ -24,7 +61,7 @@ SET>>READING>>status>>Timer_aus
 SET>>READING>>zeit>>01:00
 SET>>READING>>daily>>einmalig
 SET>>READING>>.Trigger_condition>>([$SELF#[dp]status]#[sp]eq#[sp]"Timer_an"#[sp]||#[sp]$EVENT#[sp]=#[ti]#[sp]m/(.*?)zeit#[dp].*/#[sp])
-SET>>READING>>.Distributor>>zeit:.*=>cmd1 ID 1#[nl]
+
 
 SET>>Device_to_switch>>MSwitch_Self
 SET>>comand_cmd1>>reload_timer
@@ -49,8 +86,13 @@ SET>>comand_cmd1>>$BEFEHL;
 SET>>cmd_repeat>>0
 SET>>cmd_repeat_time>>0
 
+
+sunset>>GOTO>>#END
+
+
 INQ>>second>>nosecond>>Ja,Nein>>Soll ein zweiter Befehl ( zeitverzögert ) ausgeführt werden ?
 nosecond>>GOTO>>#END
+
 
 VARASK>>$BEFEHL1>>Bitte den vollständigen zweiten Schaltbefehl angeben.<br>z.B: set DEVICE on<br><br>Diese Zeile kann auch später angegeben oder im Frontend geändert werden
 SET>>comand_cmd2>>$BEFEHL1;
