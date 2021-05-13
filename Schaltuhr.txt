@@ -44,7 +44,7 @@ ATTR>>SET>>webCmd>>sun:operator:zeit:daily:status
 SET>>READING>>zeit>>0
 SET>>READING>>operator>>+
 SET>>READING>>sun>>sunset
-SET>>READING>>.Trigger_condition>>([$SELF#[dp]status]#[sp]eq#[sp]"Timer_an"#[sp]#[wa]#[wa]#[sp]$EVENT#[sp]=#[ti]#[sp]m/(.*?)(zeit#[wa]sun#[wa]operator)#[dp].*/#[sp])#[nl]
+SET>>READING>>.Trigger_condition>>([$SELF#[dp]status]#[sp]eq#[sp]"Timer_an"#[sp]#[wa]#[wa]#[sp]$EVENT#[sp]=#[ti]#[sp]m/(.*?)(zeit|sun|operator)#[dp].*/#[sp])#[nl]
 
 GOTO>>#allgemein
 
