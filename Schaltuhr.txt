@@ -27,6 +27,8 @@ SET>>READING>>.Distributor>>zeit:.*=>cmd1 ID 1#[nl]
 ATTR>>SET>>setList>>zeit:time status:Timer_an,Timer_aus daily:einmalig,täglich
 ATTR>>SET>>readingList>>zeit status daily
 ATTR>>SET>>webCmd>>zeit:daily:status
+SET>>READING>>.Trigger_condition>>([$SELF#[dp]status]#[sp]eq#[sp]"Timer_an"#[sp]||#[sp]$EVENT#[sp]=#[ti]#[sp]m/(.*?)zeit#[dp].*/#[sp])
+
 GOTO>>#allgemein
 
 
@@ -42,6 +44,8 @@ ATTR>>SET>>webCmd>>sun:operator:zeit:daily:status
 SET>>READING>>zeit>>0
 SET>>READING>>operator>>+
 SET>>READING>>sun>>sunset
+SET>>READING>>.Trigger_condition>>([$SELF#[dp]status]#[sp]eq#[sp]"Timer_an"#[sp]#[wa]#[wa]#[sp]$EVENT#[sp]=#[ti]#[sp]m/(.*?)(zeit#[wa]sun#[wa]operator)#[dp].*/#[sp])#[nl]
+
 GOTO>>#allgemein
 
 #Modusauswahl ende
@@ -60,7 +64,7 @@ ATTR>>SET>>MSwitch_Delete_Delays>>0
 SET>>READING>>status>>Timer_aus
 SET>>READING>>zeit>>01:00
 SET>>READING>>daily>>einmalig
-SET>>READING>>.Trigger_condition>>([$SELF#[dp]status]#[sp]eq#[sp]"Timer_an"#[sp]||#[sp]$EVENT#[sp]=#[ti]#[sp]m/(.*?)zeit#[dp].*/#[sp])
+
 
 
 SET>>Device_to_switch>>MSwitch_Self
@@ -106,6 +110,3 @@ ASK>>delay_cmd2>>Bitte die Verzögerung angeben (HH:MM:SS).
 #END
 
 TEXT>>Das Device ist nun vollständig Konfiguriert und kann angelegt werden
-
-
-
