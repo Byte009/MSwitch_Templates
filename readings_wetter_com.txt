@@ -20,7 +20,7 @@ SET>>PRIORITY>>1
 
 INQ>>time>>notime>>ja,nein>>Soll das Device zu einer bestimmten Zeit ausgeführt werden ?
 
-time>>ASK>>Time_cmd1>>zu welcher Zeit soll des Device ausgeführt werden ?<br>bitte folgendes Format verwenden: [HH:MM]<br>Format mehrere Zeiten: [HH:MM][HH:MM]
+time>>ASK>>Time_cmd1>>zu welcher Zeit soll das Device ausgeführt werden ?<br>bitte folgendes Format verwenden: [HH:MM]<br>Format mehrere Zeiten: [HH:MM][HH:MM]
 
 
 
