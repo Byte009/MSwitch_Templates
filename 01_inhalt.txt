@@ -8,3 +8,4 @@ Schaltuhr.txt|Beschreibung
 Schaltuhr_2_Kanal.txt|Beschreibung
 Rolloautomatik.txt|Beschreibung
 TradfriBridge.txt|Beschreibung
+Beleuchtungsautomatik.txt|Beleuchtungsautomatik
