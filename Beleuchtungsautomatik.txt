@@ -1,0 +1,156 @@
+#Beleuchtungsautomatik
+
+DEBUG>>off
+
+VARSET>>$version>>1.0_(&T:04.06.2021_00:07)
+
+SET>>INFO>>Beleuchtungsautomatik (Version $version)<br><br>Template zur zeitabhängige Beleuchtungssteuerung morgens und abends<br>in Verbindung mit Lichtwerten und Sonnenaufgang bzw. Sonnenuntergang.<br><br>Es können folgende Werte vorgegeben werden:<br>&nbsp&nbsp&nbsp- füheste und späteste Einschalt- bzw. Auschaltzeit<br>&nbsp&nbsp&nbsp- Schwellwerte für Licht (Twilight- oder LUX-Meter-Device)<br>&nbsp&nbsp&nbsp- Berücksichtigung von Sonnenaufgang bzw. -untergang<br>&nbsp&nbsp&nbsp- Wochentage<br>&nbsp&nbsp&nbsp- Verzögerung zwischen den Schaltvorgängen<br>&nbsp&nbsp&nbsp&nbsp&nbsp(vorteilhaft, wenn der Lichtwert um den vorgegebenen Schwellwert pendelt)<br>&nbsp&nbsp&nbsp- Automatik getrennt für morgens und abends<br><br>Für das Schalten gilt folgende Rangfolge:<br><br>&nbsp&nbsp&nbsp1. Automatik (morgens/abends)<br><br>&nbsp&nbsp&nbsp2. Ein- bzw. Ausschaltzeit<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp(Anzeige der effektiven Schaltzeiten im Status)<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp- ist Sonnenaufgang eingeschaltet, wird die morgendlich Ausschaltzeit angepasst<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp- ist Sonnenuntergang eingeschaltet, wird die abendliche Einschaltzeit angepasst<br><br>&nbsp&nbsp&nbsp3. Lichtwert (Ohne Lichtwert-Device gelten die definierten Ein- bzw. Ausschaltzeiten.<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp- nur bei Vorgabe eines Lichtwerte-Devices (z.B. Twilight) mit entsprechendem Reading<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp(Ohne Lichtwert-Device gelten die definierten Ein- bzw. Ausschaltzeiten.)<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp- geschaltet wird innerhalb der vorgegebenen Zeiten nur bei Über- bzw. Unterschreiten<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspdes angegebenen Lichtwertes<br><br>&nbsp&nbsp&nbsp4. Wochentage<br><br><br>
+
+ATTR>>SET>>MSwitch_Selftrigger_always>>1
+ATTR>>SET>>event-on-change-reading>>.*
+ATTR>>SET>>MSwitch_Expert>>1
+ATTR>>SET>>MSwitch_Delete_Delays>>0
+
+ATTR>>SET>>readingList>>morgens_on morgens_off m_auto abends_on abends_off a_auto state sr ss lux_on lux_off t_mo t_di t_mi t_do t_fr t_sa t_so verzoegerung
+
+ATTR>>SET>>setList>>state:active,inactive morgens_on:time morgens_off:time m_auto:on,off abends_on:time abends_off:time a_auto:on,off sr:on,off ss:on,off wochentage:textFieldNL t_mo:on,off t_di:on,off t_mi:on,off t_do:on,off t_fr:on,off t_sa:on,off t_so:on,off lux_on:selectnumbers,0,5,100,0,lin lux_off:selectnumbers,0,5,120,0,lin verzoegerung:selectnumbers,0,30,240,0,lin
+
+ATTR>>SET>>webCmd>>state
+
+ATTR>>SET>>webCmdLabel>>Status&#58
+
+ATTR>>SET>>devStateIcon>>inactive:clock@red:active active:clock@green:inactive 1.clock@red:clock@red:m_auto+on 1.on:on:m_auto+off 1.off:off:m_auto+off 2.clock@red:clock@red:a_auto+on 2.on:on:a_auto+off 2.off:off:a_auto+off
+
+
+ATTR>>SET>>MSwitch_Wait>>[$SELF:verzoegerung]
+
+ATTR>>SET>>MSwitch_SysExtension>>1
+
+ATTR>>SET>>icon>>tradfri_dimmerswitch
+
+ATTR>>SET>>stateFormat>>state#[nl]Tage:wochentage<br>#[nl]1:m_state#[nl]von morgens_on bis morgens_off_sr#[nl]2:a_state#[nl]von abends_on_ss bis abends_off
+
+ATTR>>SET>>userReadings>>wochentage {my $t = "";; if (ReadingsVal("$name","t_mo","") eq "on") { $t = "1"};; if (ReadingsVal("$name","t_di","") eq "on") { $t = $t."2"};; if (ReadingsVal("$name","t_mi","") eq "on") { $t = $t."3"};; if (ReadingsVal("$name","t_do","") eq "on") { $t = $t."4"};; if (ReadingsVal("$name","t_fr","") eq "on") { $t = $t."5"};; if (ReadingsVal("$name","t_sa","") eq "on") { $t = $t."6"};; if (ReadingsVal("$name","t_so","") eq "on") { $t = $t."7"};; {return $t} }, morgens_off_sr {ReadingsVal("$name","sr","off") eq "on" ? substr(sunrise_abs("REAL",0,ReadingsVal("$name","morgens_on",""),ReadingsVal("$name","morgens_off","")),0,5) : ReadingsVal("$name","morgens_off",'')}, abends_on_ss {ReadingsVal("$name","ss","off") eq "on" ? substr(sunset_abs("REAL",0,ReadingsVal("$name","abends_on",""),"23:59"),0,5) : ReadingsVal("$name","abends_on",'')},sr_time {ReadingsVal("$name","sr","off") eq "on" ? substr(sunrise_abs("REAL",0,""),0,5) : " "},ss_time {ReadingsVal("$name","ss","off") eq "on" ? substr(sunset_abs("REAL",0,""),0,5) : " "},m_state {my $st = "off";; if (ReadingsVal("$name","m_auto","") eq "off") {$st = "clock\@red";;} elsif (ReadingsVal("$name","morgens_on"," ") lt substr(FmtTime(time()),0,5) and ReadingsVal("$name","morgens_off_sr"," ") gt substr(FmtTime(time()),0,5) and ReadingsVal("$name","last_ID"," ") eq "ID_0" and ReadingsVal("$name","bstCmd"," ") eq "cmd_1") {$st = "on"};;{return $st}},a_state {my $st = "off";; if (ReadingsVal("$name","a_auto","") eq "off") {$st = "clock\@red";;} elsif (ReadingsVal("$name","abends_on_ss"," ") lt substr(FmtTime(time()),0,5) and ReadingsVal("$name","abends_off"," ") gt substr(FmtTime(time()),0,5) and ReadingsVal("$name","last_ID"," ") eq "ID_0" and ReadingsVal("$name","bstCmd"," ") eq "cmd_1") {$st = "on"};;{return $st}}
+
+SET>>READING>>templateVersion>>$version
+SET>>READING>>morgens_on>>05:00
+SET>>READING>>morgens_off>>09:00
+SET>>READING>>m_state>>off
+SET>>READING>>m_auto>>on
+SET>>READING>>abends_on>>17:00
+SET>>READING>>abends_off>>01:00
+SET>>READING>>a_state>>off
+SET>>READING>>a_auto>>on
+SET>>READING>>sr>>on
+SET>>READING>>ss>>on
+SET>>READING>>t_mo>>on
+SET>>READING>>t_di>>on
+SET>>READING>>t_mi>>on
+SET>>READING>>t_do>>on
+SET>>READING>>t_fr>>on
+SET>>READING>>t_sa>>on
+SET>>READING>>t_so>>on
+SET>>READING>>bstCmd>>cmd_2
+SET>>READING>>verzoegerung>>120
+SET>>READING>>state>>inactive
+
+SET>>READING>>.sysconf>><table#[sp]border="1"#[sp]cellpadding="5"#[sp]style="border-spacing#[dp]20px#[se]">#[nl]#[sp]#[sp]#[sp]#[sp]<colgroup>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<col#[sp]width="180">#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<col#[sp]width="145">#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<col#[sp]width="145">#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<col#[sp]width="145">#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<col#[sp]width="200">#[nl]#[sp]#[sp]#[sp]#[sp]</colgroup>#[nl]#[sp]#[sp]#[sp]#[sp]<tr>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<th#[sp]style="border#[dp]0px#[sp]solid#[sp]#000"></th>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<th>morgens</th>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<th>abends</th>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<th>Lichtwert<br>[Reading#[dp]lux_device]#[sp]</th>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<th#[sp]style="border#[dp]0px"></th>#[nl]#[sp]#[sp]#[sp]#[sp]</tr>#[nl]#[sp]#[sp]#[sp]#[sp]<tr>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<th>Einschalten</th>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<td>[Widget#[dp]morgens_on]</td>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<td>[Widget#[dp]abends_on]</td>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<td>#[sp][Reading#[dp]lux_reading]<br>#[sp]<#[sp][Widget#[dp]lux_on]#[sp]</td>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<td#[sp]nowrap>Sonnenuntergang#[sp][Reading#[dp]ss_time]#[sp][Widget#[dp]ss]</td>#[nl]#[sp]#[sp]#[sp]#[sp]</tr>#[nl]#[sp]#[sp]#[sp]#[sp]<tr>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<th>Ausschalten</th>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<td>[Widget#[dp]morgens_off]</td>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<td>[Widget#[dp]abends_off]</td>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<td>[Reading#[dp]lux_reading]<br>#[sp]>#[sp][Widget#[dp]lux_off]</td>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<td#[sp]nowrap>Sonnenaufgang#[sp][Reading#[dp]sr_time]#[sp]#[sp]#[sp][Widget#[dp]sr]</td>#[nl]#[sp]#[sp]#[sp]#[sp]</tr>#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[nl]#[sp]#[sp]#[sp]#[sp]<tr>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<th>Automatik</th>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<td>[Widget#[dp]m_auto]</td>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<td>[Widget#[dp]a_auto]</td>#[nl]#[sp]#[sp]#[sp]#[sp]</tr>#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[nl]#[sp]#[sp]</table>#[nl]#[sp]#[sp]<br>#[sp]#[sp]#[nl]#[sp]<table#[sp]border="1"#[sp]cellpadding="5"#[sp]style="border-spacing#[dp]20px#[se]">#[nl]#[sp]#[sp]#[sp]#[sp]<colgroup>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<col#[sp]width="180">#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<col#[sp]width="145">#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<col#[sp]width="145">#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<col#[sp]width="145">#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<col#[sp]width="145">#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<col#[sp]width="30">#[nl]#[sp]#[sp]#[sp]#[sp]</colgroup>#[nl]#[sp]#[sp]#[sp]<tr>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]<th>Wochentage</th>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]<td#[sp]nowrap>Montag#[sp][Widget#[dp]t_mo]#[sp]</td>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]<td#[sp]nowrap>Dienstag#[sp][Widget#[dp]t_di]#[sp]</td>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]<td#[sp]nowrap>Mittwoch#[sp][Widget#[dp]t_mi]#[sp]</td>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]<td#[sp]nowrap>Donnerstag[Widget#[dp]t_do]#[sp]</td>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]<td#[sp]style="border#[dp]0px"></td>#[nl]#[sp]#[sp]#[sp]</tr>#[nl]#[sp]#[sp]#[sp]<tr>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]<td#[sp]style="border#[dp]0px"></td>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]<td#[sp]nowrap>Freitag#[sp][Widget#[dp]t_fr]#[sp]</td>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]<td#[sp]nowrap>Samstag#[sp][Widget#[dp]t_sa]#[sp]</td>#[sp]#[sp]#[sp]#[sp]#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]<td#[sp]nowrap>Sonntag#[sp][Widget#[dp]t_so]#[sp]</td>#[nl]#[sp]#[sp]#[sp]</tr>#[nl]#[sp]#[sp]#[sp]#[sp]<tr>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<th>Verzögerung#[sp](sec)<br><font#[sp]size="2"><i>zwischen#[sp]den#[sp]Schaltvorgängen</i></th>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<td>[Widget#[dp]verzoegerung]#[sp]sec</td>#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]<td#[sp]style="border#[dp]0px"></td>#[nl]#[sp]#[sp]#[sp]#[sp]</tr>#[nl]</table>#[nl]<br>#[nl]
+
+SET>>READING>>.Distributor>>morgens_.*|abends_.*|sr|ss|lux_.*|wochentage|._auto|verzoegerung=>cmd1 ID 1#[nl]
+
+
+####### Befehle feste Abfolge
+SET>>Device_to_switch>>FreeCmd
+SET>>comand_cmd1>>setreading $SELF bstCmd cmd_1;
+SET>>comand_cmd2>>setreading $SELF bstCmd cmd_2;
+SET>>condition_cmd1>>([$SELF:m_auto] eq "on" OR [$SELF:a_auto] eq "on") AND [$SELF:bstCmd] ne "cmd_1"
+SET>>condition_cmd2>>([$SELF:m_auto] eq "on" OR [$SELF:a_auto] eq "on") AND [$SELF:bstCmd] ne "cmd_2"
+SET>>ID>>-
+SET>>PRIORITY>>1
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+SET>>HIDEDISPLAY>>1
+
+SET>>Device_to_switch>>MSwitch_Self
+SET>>comand_cmd1>>reload_timer
+SET>>ID>>1
+SET>>PRIORITY>>1
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+SET>>HIDEDISPLAY>>1
+
+######
+
+# Auswahl Lichtwerte-Device und entspr. Reading als trigger
+PREASSIGMENT>>no_trigger
+VARDEVICES>>$lux>>Bitte das Lichtwerte-Device wählen.<br>Ohne Lichtwert-Device gelten die definierten Ein- bzw. Ausschaltzeiten. 
+SET>>Trigger_device>>$lux
+IF>>"$lux" == "no_trigger">>GOTO>>#Auswahl_no_trigger
+SET>>READING>>lux_device>>$lux
+
+#Auswahl_Reading
+VARREADING>>$illuminance>>$lux>>Bitte das entsprechende Reading von $lux wählen
+IF>>"$illuminance" == "twilight">>GOTO>>#Auswahl_Twilight
+
+#Auswahl_BH1750_Illuminance
+PREASSIGMENT>>BH1750_Illuminance
+SET>>READING>>lux_on>>80
+SET>>READING>>lux_off>>120
+GOTO>>#Auswahl_Reading_10
+
+#Auswahl_no_trigger
+SET>>Trigger_device>>MSwitch_Self
+SET>>READING>>lux_device>>nicht definiert
+SET>>READING>>lux_reading>>&nbsp;
+SET>>READING>>lux_on>>0
+SET>>READING>>lux_off>>0
+SET>>Time_cmd1>>TIME=[$SELF:morgens_on]|[$SELF:wochentage][NEXTTIMER]TIME=[$SELF:abends_on_ss]|[$SELF:wochentage]
+GOTO>>#Auswahl_Exit
+
+#Auswahl_Twilight
+PREASSIGMENT>>twilight
+SET>>READING>>lux_on>>75
+SET>>READING>>lux_off>>85
+
+#Auswahl_Reading_10
+TEXT>>gewähltes Reading von $lux: $illuminance
+SET>>READING>>lux_reading>>$illuminance
+SET>>READING>>.Trigger_cmd_on>>$lux:$illuminance:.*[*<[$SELF:lux_on]]
+SET>>READING>>.Trigger_cmd_off>>$lux:$illuminance:.*[*>[$SELF:lux_off]]
+
+#Auswahl_Exit
+SET>>Trigger_condition>>[[$SELF:morgens_on]-[$SELF:morgens_off_sr]|[$SELF:wochentage]] AND [$SELF:m_auto] eq "on" OR [[$SELF:abends_on_ss]-[$SELF:abends_off]|[$SELF:wochentage]] AND [$SELF:a_auto] eq "on" 
+SET>>Time_cmd2>>TIME=[$SELF:morgens_off_sr]|[$SELF:wochentage][NEXTTIMER]TIME=[$SELF:abends_off]|[$SELF:wochentage]
+PREASSIGMENT>>
+
+# Auswahl der Leuchten - Anlage als Gruppe
+PREASSIGMENT>>
+#INQ>>LG>>noLG>>Ja,Nein>>Soll eine Leuchtengruppe angelegt werden??
+#noLG>>GOTO>>#Auswahl_LG_Exit
+VARDEVICES>>$Device_to_switch>>Bitte die zu schaltende(n) Leuchten wählen.<br>Mehrfachauswahl mit STGR*Maus.
+MSwitch_Device_Groups>>LEUCHTENGRUPPE->$Device_to_switch#[nl]
+SET>>Device_to_switch>>LEUCHTENGRUPPE
+SELECT>>comand_cmd1>>Wie lautet das Kommando zum Einschalten der Leuchten?
+SELECT>>comand_cmd2>>Wie lautet das Kommando zum Ausschalten der Leuchten?
+SET>>condition_cmd1>>([$SELF:m_auto] eq "on" OR [$SELF:a_auto] eq "on") AND [$SELF:bstCmd] ne "cmd_1"
+SET>>condition_cmd2>>([$SELF:m_auto] eq "on" OR [$SELF:a_auto] eq "on") AND [$SELF:bstCmd] ne "cmd_2"
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+#Auswahl_LG_Exit
+
+#Auswahl_FeeCmd
+INQ>>FreeCmd>>noFreeCmd>>Ja,Nein>>Soll ein FreeCmd angelegt werden?
+noFreeCmd>>GOTO>>#Auswahl_FeeCmd_Exit
+VARASK>>$BEFEHL1>>Bitte den vollständigen Schaltbefehl für CMD 1 eingeben.<br>Der Befehl kann auch später angegeben werden bzw. im Frontend geändert werden.
+VARASK>>$BEFEHL2>>Bitte den vollständigen Schaltbefehl für CMD 2 eingeben.<br>Der Befehl kann auch später angegeben werden bzw. im Frontend geändert werden.
+SET>>Device_to_switch>>FreeCmd
+SET>>comand_cmd1>>$BEFEHL1
+SET>>comand_cmd2>>$BEFEHL2
+SET>>condition_cmd1>>([$SELF:m_auto] eq "on" OR [$SELF:a_auto] eq "on") AND [$SELF:bstCmd] ne "cmd_1"
+SET>>condition_cmd2>>([$SELF:m_auto] eq "on" OR [$SELF:a_auto] eq "on") AND [$SELF:bstCmd] ne "cmd_2"
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+#Auswahl_FeeCmd_Exit
+
+
+TEXT>>Das Device ist nun vollständig konfiguriert und kann angelegt werden.
