@@ -6,16 +6,10 @@ PREASSIGMENT>>
 
 TEXT>>Das Device wird weitestgehend vorkonfiguriert und es müssen lediglich die Schaltbefehle angegeben werden.<br>Schaltzeit und Typ kann später im Frontend eingestellt werden.
 
-
-
-
-
 INQ>>nosunset>>sunset>>Zeitgesteuert,Sonnenstandgesteuert>>Soll es sich um ein rein zeitgesteuertes Device handeln, oder um ein Sonnenaufgang-/untergang gesteuertes ?
 
 sunset>>GOTO>>#Sunsetgesteuert
 nosunset>>GOTO>>#Zeitgesteuert
-
-
 
 # Auswahl je nach Modus
 
@@ -36,15 +30,36 @@ GOTO>>#allgemein
 
 #Sunsetgesteuert
 
-SET>>Time_cmd1>>TIME={[$SELF:sun]([$SELF:operator]([$SELF:zeit]*60))}
-SET>>READING>>.Distributor>>(zeit|sun|operator):.*=>cmd1 ID 1#[nl]
-ATTR>>SET>>setList>>zeit:selectnumbers,0,1,60,0,lin status:Timer_an,Timer_aus daily:einmalig,täglich sun:sunset,sunrise operator:+,-
-ATTR>>SET>>readingList>>zeit status daily sun operator
-ATTR>>SET>>webCmd>>sun:operator:zeit:daily:status
+SET>>Time_cmd1>>TIME={[$SELF:sun]("[$SELF:Horizon]",[$SELF:operator]([$SELF:zeit]*60),"[$SELF:min]","[$SELF:max]")}|WDAY=[$SELF:daysformat]
+SET>>READING>>.Distributor>>(zeit|sun|operator|Horizon|min|max|days):.*=>cmd1 ID 1#[nl]
+ATTR>>SET>>setList>>zeit:selectnumbers,0,1,120,0,lin status:Timer_an,Timer_aus daily:einmalig,täglich sun:sunset,sunrise operator:+,- Horizon:REAL,CIVIL,NAUTIC,ASTRONOMIC min:time max:time days:multiple-strict,Montag,Dienstag,Mitwoch,Donnerstag,Freitag,Samstag,Sonntag daysformat
+ATTR>>SET>>readingList>>zeit status daily sun operator sunsetreg sunrisereg aktsetsun Horizon min max days daysformat
+ATTR>>SET>>webCmd>>sun:Horizon:operator:zeit:min:max:days:daily
 SET>>READING>>zeit>>0
 SET>>READING>>operator>>+
 SET>>READING>>sun>>sunset
-SET>>READING>>.Trigger_condition>>([$SELF#[dp]status]#[sp]eq#[sp]"Timer_an"#[sp]||#[sp]$EVENT#[sp]=#[ti]#[sp]m/(.*?)(zeit|sun|operator)#[dp].*/#[sp])
+
+
+SET>>READING>>Horizon>>REAL
+SET>>READING>>min>>00:01
+SET>>READING>>max>>23:59
+SET>>READING>>days>>Montag,Dienstag,Mitwoch,Donnerstag,Freitag,Samstag,Sonntag
+SET>>READING>>daysformat>>1,2,3,4,5,6,7
+
+
+
+
+SET>>READING>>.Trigger_condition>>([$SELF#[dp]status]#[sp]eq#[sp]"Timer_an"#[sp]||#[sp]$EVENT#[sp]=#[ti]#[sp]m/(.*?)(zeit|sun|operator|Horizon|min|max|days)#[dp].*/#[sp])
+
+
+SET>>Device_to_switch>>FreeCmd
+SET>>comand_cmd1>>{#[nl]my#[sp]%tage#[sp]=#[sp]("Montag"#[sp]=>#[sp]1#[ko]"Dienstag"#[sp]=>#[sp]2#[ko]"Mitwoch"#[sp]=>#[sp]3#[ko]"Donnerstag"#[sp]=>#[sp]4#[ko]"Freitag"#[sp]=>#[sp]5#[ko]"Samstag"#[sp]=>#[sp]6#[ko]"Sonntag"#[sp]=>#[sp]7)#[se]#[nl]my#[sp]$days="[$SELF#[dp]days]"#[se]#[nl]foreach#[sp]my#[sp]$a#[sp](#[sp]keys#[sp]%tage#[sp])#[nl]#[sp]#[sp]#[sp]#[sp]{#[nl]#[sp]#[sp]#[sp]#[sp]my#[sp]$code#[sp]=#[sp]$tage{$a}#[se]#[nl]#[sp]#[sp]#[sp]#[sp]fhem#[sp]("set#[sp]$SELF#[sp]writelog#[sp]0#[sp]aktkey#[sp]$a#[sp]-#[sp]$code#[sp]")#[se]#[nl]#[sp]#[sp]#[sp]#[sp]$days#[sp]=~#[sp]s/$a/$code/g#[se]#[nl]#[sp]#[sp]#[sp]#[sp]}#[nl]fhem#[sp]("set#[sp]$SELF#[sp]daysformat#[sp]$days")#[se]#[nl]}#[sp]#[sp]
+SET>>ID>>1
+SET>>HIDE>>1
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+SET>>PRIORITY>>1
+
 
 GOTO>>#allgemein
 
@@ -110,3 +125,4 @@ ASK>>delay_cmd2>>Bitte die Verzögerung angeben (HH:MM:SS).
 #END
 
 TEXT>>Das Device ist nun vollständig Konfiguriert und kann angelegt werden
+
