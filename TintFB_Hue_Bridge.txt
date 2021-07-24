@@ -1,0 +1,145 @@
+DEBUG>>off
+
+SET>>INFO>>MSwitch_Bridge Tint-Fernbedienung/dimmbare Lampe<br><br>Dieses Template erstellt ein Mswitch, welches eine Lampe über eine TintFernbedienung schaltet.<br>Die Konfiguration ist abhängig von verschiedenen Systemen.<br>Folgende Funktionen sind verfügbar:<br>- heller/dunkler - kurzer Tastendruck<br>- dimmup/dimmdown - langer - Tastendruck<br>- Toggle<br>- (entweder) Farbwechlser Tastendruck links/rechts (nur im Hue System)<br>- (oder) Farbtemperatur Tastendruck links/rechts (nur im Hue System)<br><br>
+
+ATTR>>SET>>MSwitch_Expert>>1
+ATTR>>SET>>readingList>>rgb test jpc aktpct
+ATTR>>SET>>setList>>rgb test jpc:10,20,30 aktpct
+ATTR>>SET>>webCmd>>jpc
+ATTR>>SET>>webCmdLabel>>Dimm-Steps
+ATTR>>SET>>stateFormat>>Target: target Typ: typ
+ATTR>>SET>>MSwitch_Modul_Mode>>1
+ATTR>>SET>>MSwitch_Extensions>>1
+ATTR>>SET>>icon>>tradfri_remote
+
+PREASSIGMENT>>MQTT2_zigbee_0x00158d000361f00c
+VARDEVICES>>$fbname>>Bitte die Tint Fernbedienung wählen
+
+VARSET>>$dimup>>.*action:brightness_up_click
+VARSET>>$dimdown>>.*action:brightness_down_click
+VARSET>>$holdup>>.*action:brightness_up_hold
+VARSET>>$holddown>>.*action:brightness_down_hold
+VARSET>>$power>>.*action:(on|off)
+VARSET>>$colorwheel>>.*action:color_wheel
+VARSET>>$colortemp>>.*action:color_temp
+
+###################
+
+SET>>Trigger_device>>$fbname
+
+SET>>MSwitch_cmd2>>.*release
+SET>>MSwitch_cmd1>>$power
+
+SET>>READING>>.Distributor>>$holdup=>cmd1 ID 4#[nl]$dimup=>cmd1 ID 3#[nl]$holddown=>cmd2 ID 4#[nl]$dimdown=>cmd2 ID 3#[nl]$colorwheel=>cmd1 ID 1#[nl]$colortemp=>cmd1 ID 2#[nl]
+
+SET>>READING>>jpc>>10
+SET>>READING>>aktptc>>1
+
+PREASSIGMENT>>HUEDevice2
+#PREASSIGMENT>>bitte wählen ....
+VARDEVICES>>$zieldevice>>Bitte zu schaltende Lampe angeben:
+
+SET>>READING>>target>>$zieldevice
+
+VARSET>>$STEP>>0.2
+VARSET>>$range>>3
+
+SET>>Device_to_switch>>$zieldevice
+SET>>comand_cmd1>>toggle
+SET>>PRIORITY>>1
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+SET>>HIDEDISPLAY>>0
+
+SET>>Device_to_switch>>MSwitch_Self
+SET>>comand_cmd2>>del_delays
+SET>>PRIORITY>>1
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+SET>>HIDEDISPLAY>>0
+
+SET>>Device_to_switch>>FreeCmd
+SET>>comand_cmd1>>{#[nl]#[nl]my#[sp]$x#[sp]=0.7#[se]#[nl]my#[sp]$y#[sp]=#[sp]0.3#[se]#[nl]#[nl]$x#[sp]=#[sp]ReadingsVal("$NAME"#[ko]#[sp]"0x00158d000361f00c_action_color_x"#[ko]#[sp]0#[sp])#[se]#[nl]$y#[sp]=#[sp]ReadingsVal("$NAME"#[ko]#[sp]"0x00158d000361f00c_action_color_y"#[ko]#[sp]0#[sp])#[se]#[nl]my#[sp]$eingang#[sp]=#[sp]ReadingsVal("$zieldevice"#[ko]#[sp]"bri"#[ko]#[sp]100#[sp])#[se]#[nl]#[nl]my#[sp]$emin=0#[se]#[nl]my#[sp]$emax=254#[se]#[nl]#[nl]my#[sp]$amin=0#[se]#[nl]my#[sp]$amax=1#[se]#[nl]#[nl]$eingang#[sp]=#[sp]$emin#[sp]if#[sp]$eingang#[sp]<#[sp]$emin#[se]#[nl]$eingang#[sp]=#[sp]$emax#[sp]if#[sp]$eingang#[sp]>#[sp]$emax#[se]#[nl]my#[sp]$Y=#[sp]#[sp](($amax-$amin)/($emax-$emin)*($eingang-$emin))+$amin#[se]#[nl]#[nl]fhem("setreading#[sp]$SELF#[sp]briraw#[sp]$eingang#[sp]")#[se]#[nl]fhem("setreading#[sp]$SELF#[sp]bri#[sp]$Y#[sp]")#[se]#[nl]#[nl]#[nl]#$Y=0.1#[se]#[nl]#[nl]#[sp]#[sp]my#[sp]$r#[sp]=#[sp]0#[se]#[nl]#[sp]#[sp]my#[sp]$g#[sp]=#[sp]0#[se]#[nl]#[sp]#[sp]my#[sp]$b#[sp]=#[sp]0#[se]#[nl]#[nl]#[sp]#[sp]if(#[sp]$y#[sp]>#[sp]0#[sp])#[sp]{#[nl]#[sp]#[sp]#[sp]#[sp]my#[sp]$X#[sp]=#[sp]$x#[sp]*#[sp]$Y#[sp]/#[sp]$y#[se]#[nl]#[sp]#[sp]#[sp]#[sp]my#[sp]$Z#[sp]=#[sp](1#[sp]-#[sp]$x#[sp]-#[sp]$y)*$Y#[sp]/#[sp]$y#[se]#[nl]#[nl]#[sp]#[sp]#[sp]#[sp]if(#[sp]$X#[sp]>#[sp]1#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[SR]#[SR]#[sp]$Y#[sp]>#[sp]1#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[SR]#[SR]#[sp]$Z#[sp]>#[sp]1#[sp])#[sp]{#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]my#[sp]$f#[sp]=#[sp]main#[dp]#[dp]maxNum($X#[ko]$Y#[ko]$Z)#[se]#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]$X#[sp]/=#[sp]$f#[se]#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]$Y#[sp]/=#[sp]$f#[se]#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]$Z#[sp]/=#[sp]$f#[se]#[nl]#[sp]#[sp]#[sp]#[sp]}#[nl]#[nl]#[sp]#[sp]#[sp]#[sp]$r#[sp]=#[sp]#[sp]0.7982#[sp]*#[sp]$X#[sp]+#[sp]0.3389#[sp]*#[sp]$Y#[sp]-#[sp]0.1371#[sp]*#[sp]$Z#[se]#[nl]#[sp]#[sp]#[sp]#[sp]$g#[sp]=#[sp]-0.5918#[sp]*#[sp]$X#[sp]+#[sp]1.5512#[sp]*#[sp]$Y#[sp]+#[sp]0.0406#[sp]*#[sp]$Z#[se]#[nl]#[sp]#[sp]#[sp]#[sp]$b#[sp]=#[sp]#[sp]0.0008#[sp]*#[sp]$X#[sp]+#[sp]0.0239#[sp]*#[sp]$Y#[sp]+#[sp]0.9753#[sp]*#[sp]$Z#[se]#[nl]#[nl]#[sp]#[sp]#[sp]#[sp]if(#[sp]$r#[sp]>#[sp]1#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[SR]#[SR]#[sp]$g#[sp]>#[sp]1#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]#[SR]#[SR]#[sp]$b#[sp]>#[sp]1#[sp])#[sp]{#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]my#[sp]$f#[sp]=#[sp]main#[dp]#[dp]maxNum($r#[ko]$g#[ko]$b)#[se]#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]$r#[sp]/=#[sp]$f#[se]#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]$g#[sp]/=#[sp]$f#[se]#[nl]#[sp]#[sp]#[sp]#[sp]#[sp]#[sp]$b#[sp]/=#[sp]$f#[se]#[nl]#[sp]#[sp]#[sp]#[sp]}#[nl]#[nl]#test#[nl]#[nl]#[sp]#[sp]}#[nl]#[nl]$r=#[sp]$r*255#[se]#[nl]$g=#[sp]$g*255#[se]#[nl]$b=#[sp]$b*255#[se]#[nl]#[nl]my#[sp]$return#[sp]=#[sp]sprintf(#[sp]"%2.2X%2.2X%2.2X"#[ko]#[sp]$r#[ko]#[sp]$g#[ko]#[sp]$b#[sp])#[se]#[nl]fhem("set#[sp]$zieldevice#[sp]rgb#[sp]$return#[sp]")#[se]#[nl]fhem("set#[sp]$zieldevice#[sp]bri#[sp]$eingang")#[se]#[nl]}#[nl]
+
+SET>>PRIORITY>>1
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+SET>>HIDEDISPLAY>>0
+SET>>ID>>1
+
+SET>>Device_to_switch>>FreeCmd
+SET>>comand_cmd1>>{#[nl]my#[sp]$eingang#[sp]=#[sp]ReadingsVal("$fbname"#[ko]#[sp]"0x00158d000361f00c_action_color_temperature"#[ko]#[sp]0#[sp])#[se]#[nl]#[nl]my#[sp]$emin=153#[se]#[nl]my#[sp]$emax=370#[se]#[nl]#[nl]my#[sp]$amin=150#[se]#[nl]my#[sp]$amax=500#[se]#[nl]#[nl]$eingang#[sp]=#[sp]$emin#[sp]if#[sp]$eingang#[sp]<#[sp]$emin#[se]#[nl]$eingang#[sp]=#[sp]$emax#[sp]if#[sp]$eingang#[sp]>#[sp]$emax#[se]#[nl]my#[sp]$y=#[sp]int#[sp](($amax-$amin)/($emax-$emin)*($eingang-$emin))+$amin#[se]#[nl]#[nl]fhem#[sp]("set#[sp]$zieldevice#[sp]ct#[sp]$y")#[se]#[nl]}
+SET>>PRIORITY>>1
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+SET>>HIDEDISPLAY>>0
+SET>>ID>>2
+
+SET>>Device_to_switch>>$zieldevice
+SET>>comand_cmd1>>pct { (int ( [$zieldevice:pct]/10)*10)+[$SELF:jpc]}
+SET>>comand_cmd2>>pct { (int ( [$zieldevice:pct]/10)*10)-[$SELF:jpc]}
+SET>>PRIORITY>>1
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+SET>>condition_cmd1>>[$zieldevice:pct] < 100
+SET>>condition_cmd2>>[$zieldevice:pct] > 0
+SET>>HIDEDISPLAY>>0
+SET>>ID>>3
+
+SET>>Device_to_switch>>MSwitch_Self
+SET>>comand_cmd1>>aktpct [$zieldevice:pct]
+SET>>comand_cmd2>>aktpct [$zieldevice:pct]
+SET>>PRIORITY>>1
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+SET>>HIDEDISPLAY>>0
+SET>>ID>>4
+
+SET>>Device_to_switch>>MSwitch_Self
+SET>>comand_cmd1>>exec_cmd_1 ID 5
+SET>>comand_cmd2>>exec_cmd_2 ID 5
+SET>>PRIORITY>>2
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+SET>>HIDEDISPLAY>>0
+SET>>ID>>4
+SET>>delay_cmd1>>$STEP
+SET>>delay_cmd2>>$STEP
+
+SET>>Device_to_switch>>MSwitch_Self
+SET>>comand_cmd1>>aktpct {[$SELF:aktpct]+$range}
+SET>>comand_cmd2>>aktpct {[$SELF:aktpct]-$range}
+SET>>PRIORITY>>1
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+SET>>HIDEDISPLAY>>0
+SET>>ID>>5
+
+SET>>Device_to_switch>>$zieldevice
+SET>>comand_cmd1>>pct [$SELF:aktpct] $STEP
+SET>>comand_cmd2>>pct [$SELF:aktpct] $STEP
+SET>>PRIORITY>>2
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+SET>>HIDEDISPLAY>>0
+SET>>ID>>5
+
+SET>>Device_to_switch>>MSwitch_Self
+SET>>comand_cmd1>>exec_cmd_1 ID 5
+SET>>comand_cmd2>>exec_cmd_2 ID 5
+SET>>PRIORITY>>3
+SET>>cmd_repeat>>0
+SET>>cmd_repeat_time>>0
+SET>>HIDEDISPLAY>>0
+SET>>ID>>5
+SET>>condition_cmd1>>[$SELF:aktpct] <100
+SET>>condition_cmd2>>[$SELF:aktpct] > 0
+SET>>delay_cmd1>>$STEP
+SET>>delay_cmd2>>$STEP
+
+GOTO>>#END
+
+#END
+
+SET>>READING>>.info>>Das Gerät ist als TINT-Remote - $zieldevice Bridge konfiguriert<br>Weitere Einstellungen sind nicht Notwendig
+TEXT>>Das Device wurde für das Hue-System konfiguriert und kann angelegt werden.
