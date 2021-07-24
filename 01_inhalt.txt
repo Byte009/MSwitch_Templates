@@ -9,3 +9,4 @@ Schaltuhr_2_Kanal.txt|Beschreibung
 Rolloautomatik.txt|Beschreibung
 TradfriBridge.txt|Beschreibung
 Beleuchtungsautomatik.txt|Beleuchtungsautomatik
+TintFB_Hue_Bridge.txt|Tint Fernbedienung Hue Light
