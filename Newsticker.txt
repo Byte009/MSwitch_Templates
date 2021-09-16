@@ -1,5 +1,5 @@
 DEBUG>>off
-SET>>INFO>>Newsreader Achtung:Mswitch muss mindestens in Version 6.01 vorliegen
+SET>>INFO>>Newsreader<br>Achtung:Mswitch muss mindestens in Version 6.01 vorliegen
 PREASSIGMENT>>
 
 # ----- Feedauswahl -----
