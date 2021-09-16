@@ -18,7 +18,7 @@ Bild>>VARSET>>$HTML>>https://www.bild.de/rssfeeds/vw-news/vw-news-16726644,dzbil
 
 # ----- setze Attribute ----
 
-ATTR>>SET>>MSwitch_Modul_Mode>>0
+ATTR>>SET>>MSwitch_Modul_Mode>>1
 ATTR>>SET>>eventMap>>/exec_cmd_1:reload/
 ATTR>>SET>>MSwitch_generate_Events>>1
 ATTR>>SET>>stateFormat>>reload: Next_Timer
