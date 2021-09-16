@@ -1,5 +1,5 @@
 # IF>>"$lux" == "no_trigger">>GOTO>>#Auswahl_no_trigger
-DEBUG>>on
+DEBUG>>off
 SET>>INFO>>Newsreader Achtung:Mswitch muss mindestens in Version 6.01 vorliegen
 PREASSIGMENT>>
 
