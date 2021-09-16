@@ -15,14 +15,22 @@ ATTR>>SET>>icon>>tradfri_remote
 PREASSIGMENT>>MQTT2_zigbee_0x00158d000361f00c
 VARDEVICES>>$fbname>>Bitte die Tint Fernbedienung wählen
 
-VARSET>>$dimup>>.*action:brightness_up_click
-VARSET>>$dimdown>>.*action:brightness_down_click
-VARSET>>$holdup>>.*action:brightness_up_hold
-VARSET>>$holddown>>.*action:brightness_down_hold
+VARSET>>$dimup>>.*action:brightness_step_up
+VARSET>>$dimdown>>.*action:brightness_step_down
+VARSET>>$holdup>>.*action:brightness_move_up
+VARSET>>$holddown>>.*action:brightness_move_down
 VARSET>>$power>>.*action:(on|off)
-VARSET>>$colorwheel>>.*action:color_wheel
-VARSET>>$colortemp>>.*action:color_temp
+VARSET>>$colorwheel>>.*action:color_move
+VARSET>>$colortemp>>.*action:color_temperature_move
 
+
+
+PREASSIGMENT>>
+VARASK>>$GROUP>>Bitte die GruppenID der Ferndedienung angeben , auf welche reagiert werden soll. ( Reading: $fbname:action_group )
+
+
+
+SET>>READING>>.Trigger_condition>>[MQTT2_zigbee_0x00158d000361f00c#[dp]action_group]#[sp]eq#[sp]"$GROUP"
 ###################
 
 SET>>Trigger_device>>$fbname
@@ -139,6 +147,11 @@ SET>>delay_cmd1>>$STEP
 SET>>delay_cmd2>>$STEP
 
 GOTO>>#END
+
+#END
+
+SET>>READING>>.info>>Das Gerät ist als TINT-Remote - $zieldevice Bridge konfiguriert<br>Weitere Einstellungen sind nicht Notwendig
+TEXT>>Das Device wurde für das Hue-System konfiguriert und kann angelegt werden.
 
 #END
 
