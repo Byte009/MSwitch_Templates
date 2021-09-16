@@ -1,0 +1,95 @@
+# IF>>"$lux" == "no_trigger">>GOTO>>#Auswahl_no_trigger
+DEBUG>>on
+SET>>INFO>>Newsreader Achtung:Mswitch muss mindestens in Version 6.01 vorliegen
+PREASSIGMENT>>
+
+# ----- Feedauswahl -----
+
+INCSELECT>>ARD,ZDF,WELT,Hessenschau,Bild>>ARD,ZDF,WELT,Hessenschau,Bild>>Welcher Newsfeed soll gelesen werden ?
+
+ARD>>VARSET>>$HTML>>https://www.tagesschau.de/newsticker.rdf
+ZDF>>VARSET>>$HTML>>https://www.zdf.de/rss/zdf/nachrichten
+WELT>>VARSET>>$HTML>>https://www.welt.de/feeds/latest.rss
+Hessenschau>>VARSET>>$HTML>>https://www.hessenschau.de/index.rss
+Bild>>VARSET>>$HTML>>https://www.bild.de/rssfeeds/vw-news/vw-news-16726644,dzbildplus=true,sort=1,teaserbildmobil=false,view=rss2.bild.xml
+
+# ----- Feedauswahl ENDE ----
+
+
+# ----- setze Attribute ----
+
+ATTR>>SET>>MSwitch_Modul_Mode>>0
+ATTR>>SET>>eventMap>>/exec_cmd_1:reload/
+ATTR>>SET>>MSwitch_generate_Events>>1
+ATTR>>SET>>stateFormat>>reload: Next_Timer
+ATTR>>SET>>MSwitch_Mode>>Full
+ATTR>>SET>>MSwitch_Expert>>1
+ATTR>>SET>>eventMap>>/exec_cmd_1:reload/
+ATTR>>SET>>webCmd>>reload
+ATTR>>SET>>MSwitch_SysExtension>>2
+ATTR>>SET>>MSwitch_ExtraktHTTPMapping>>&quot;->"#[nl]&#246;->ö#[nl]&#160;-> #[nl]&#252;->ü#[nl]\]\]\>->#[nl]\<!\[CDATA\[->#[nl]&#223;->ß#[nl]
+ATTR>>SET>>MSwitch_ExtraktfromHTTP>>Titel-><title>(.*)<\/title>#[nl]Link-><link>(.*)</link>
+
+PREASSIGMENT>>5
+
+VARASK>>$LINES>>Bitte die Anzahl der anzuzeigenden Newszeilen angeben .
+ATTR>>SET>>MSwitch_ExtraktHTTP_max>>$LINES
+
+# ----- setze Attribute ENDE ----
+
+# ----- SCHLEIFE1 Sysextensions werden aufgebaut------
+
+VARSET>>$FIRST>><table#[sp]id="sender"#[sp]#[sp]style=""#[sp]border="0"#[sp]class="block#[sp]wide"#[sp]cellpadding="0"#[sp]style="border-spacing#[dp]0px#[se]">#[nl]<tr#[sp]class="even"><td>
+
+VARSET>>$LAST>></td></tr></table>#[nl]#[nl]#[nl]#[nl]<table#[sp]id="loading"#[sp]#[sp]style=#[st]display#[dp]none#[st]#[sp]border=#[st]0#[st]#[sp]class=#[st]block#[sp]wide#[st]#[sp]cellpadding=#[st]0#[st]#[sp]style=#[st]border-spacing#[dp]0px#[se]#[st]>#[nl]<tr#[sp]class="even">#[nl]<td><center>#[nl]loading#[sp]feed#[sp](#[sp][Reading#[dp]Sender]#[sp])#[ko]#[sp]this#[sp]may#[sp]take#[sp]a#[sp]few#[sp]seconds#[sp]..........#[nl]</td>#[nl]</tr></table>#[nl]#[nl]<br>
+
+VARSET>>$STARTLINE>>0
+VARSET>>$MIDDLE>>
+
+#MIDDLELINE
+
+VARINC>>$STARTLINE
+#TEXT>>$STARTLINE
+
+VARSET>>$MIDDLE>>$MIDDLE-#[sp][Reading#[dp]Titel_$STARTLINE]#[sp]-#[sp]<span#[sp]id#[sp]="t$STARTLINE"><a#[sp]href="#[sp][RAW#[dp]Link_$STARTLINE]"#[sp]target=#[st]_blank#[st]>Link</a></span>#[nl]<br>
+
+IF>>$STARTLINE < $LINES>>GOTO>>#MIDDLELINE
+
+VARSET>>$READYLINE>>$FIRST$MIDDLE$LAST
+
+# ----- SCHLEIFE1 ENDE ------
+
+
+# ----- SCHLEIFE2 Sysextensions Teil 2 (java) werden aufgebaut------
+
+VARSET>>$FIRST>>#[nl]<script#[sp]type="text/javascript">#[nl]#[nl]$("body").on(#[st]DOMSubtreeModified#[st]#[ko]#[sp]"[informId=#[st]$Name-Sender#[st]]"#[ko]#[sp]function()#[sp]{#[nl]$("#sender").css("display"#[ko]"none")#[se]#[nl]$("#loading").css("display"#[ko]"")#[se]#[nl]return#[se]#[nl]})#[sp]>#[nl]#[nl]$("body").on(#[st]DOMSubtreeModified#[st]#[ko]#[sp]"[informId=#[st]$Name-Titel#[st]]"#[ko]#[sp]function()#[sp]{#[nl]$("#sender").css("display"#[ko]"")#[se]#[nl]$("#loading").css("display"#[ko]"none")#[se]#[nl]return#[se]#[nl]})#[sp]>
+
+VARSET>>$LAST>>#[nl]</script>
+
+VARSET>>$MIDDLE>>
+
+VARSET>>$STARTLINE>>0
+
+#MIDDLELINE1
+
+VARINC>>$STARTLINE
+#TEXT>>$STARTLINE
+VARSET>>$MIDDLE>>$MIDDLE#[nl]#[nl]$("body").on(#[st]DOMSubtreeModified#[st]#[ko]#[sp]"[informId=#[st]$Name-Link_$STARTLINE#[st]]"#[ko]#[sp]function()#[sp]{#[nl]var#[sp]$Nametestweekday#[sp]=#[sp]$(#[sp]"div[informId=#[st]$Name-Link_$STARTLINE#[st]]"#[sp]).text()#[se]#[nl]document.getElementById(#[st]t$STARTLINE#[st]#[sp]).innerHTML="<a#[sp]href=#[st]"+$Nametestweekday+"#[st]#[sp]target=#[st]_blank#[st]>Link</a>"#[se]#[nl]return#[se]#[nl]})#[sp]
+
+IF>>$STARTLINE < $LINES>>GOTO>>#MIDDLELINE1
+
+VARSET>>$READYLINE1>>$FIRST$MIDDLE$LAST
+
+# ----- SCHLEIFE2 ENDE ------
+
+SET>>READING>>.sysconf>>$READYLINE#[nl]#[nl]$READYLINE1
+SET>>Device_to_switch>>MSwitch_Self
+SET>>comand_cmd1>>loadHTTP $HTML
+SET>>PRIORITY>>1
+
+PREASSIGMENT>>00:15
+VARASK>>$RELOAD>>Bitte das Reloadintervall angeben (hh:mm)
+
+SET>>Time_cmd1>>REPEAT=$RELOAD*00:00-23:59
+
+TEXT>>Das Device ist nun vollständig Konfiguriert und wird angelegt.
