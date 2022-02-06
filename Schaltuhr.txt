@@ -16,7 +16,7 @@ nosunset>>GOTO>>#Zeitgesteuert
 
 #Zeitgesteuert
 
-SET>>Time_cmd1>>TIME={ReadingsVal("$name","zeit",0)}
+SET>>Time_cmd1>>TIME={ReadingsVal("$name","zeit",0)}|WDAY=[$SELF:daysformat]
 #SET>>Time_cmd2>>TIME={ReadingsVal("$name","zeit",0)}
 SET>>READING>>.Distributor>>(zeit|sun|operator|Horizon|min|max|days):.*=>cmd1 ID 1#[nl]
 ATTR>>SET>>setList>>zeit:time status:Timer_an,Timer_aus daily:einmalig,täglich comand:textFieldNL-long days:multiple-strict,Montag,Dienstag,Mitwoch,Donnerstag,Freitag,Samstag,Sonntag daysformat 
